@@ -172,6 +172,8 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { post1, get1, del1 } from '@/api/index1'
+
 // 状态定义
 const isDark = ref(false);
 const searchQuery = ref('');
@@ -180,21 +182,36 @@ const viewMode = ref('grid');
 const showUploadModal = ref(false);
 const previewImage = ref(null);
 const loading = ref(true);
+const uploading = ref(false);
 const toast = ref({ show: false, message: '', type: 'success' });
 const handletop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 };
-// 模拟数据
-const images = ref([
-  { id: 1, url: 'https://picsum.photos/800/600?random=1', title: '山间清晨', description: '清晨阳光洒在山峦上的壮丽景色，云雾缭绕。', author: 'Alex Chen', likes: 124, date: '2026-05-01' },
-  { id: 2, url: 'https://picsum.photos/800/600?random=2', title: '城市夜景', description: '繁华都市的霓虹灯光与车流交织出的现代感。', author: 'Sarah Li', likes: 89, date: '2026-05-02' },
-  { id: 3, url: 'https://picsum.photos/800/600?random=3', title: '静谧湖泊', description: '湖面如镜，倒映着蓝天白云，令人心旷神怡。', author: 'Mike Wang', likes: 210, date: '2026-05-03' },
-  { id: 4, url: 'https://picsum.photos/800/600?random=4', title: '秋日森林', description: '金黄色的树叶铺满林间小道，秋意浓烈。', author: 'Emily Zhang', likes: 156, date: '2026-05-04' },
-  { id: 5, url: 'https://picsum.photos/800/600?random=5', title: '海岸线', description: '海浪拍打礁石的自然韵律，展现大海的力量。', author: 'David Liu', likes: 98, date: '2026-05-05' },
-  { id: 6, url: 'https://picsum.photos/800/600?random=6', title: '沙漠绿洲', description: '浩瀚沙漠中罕见的生命迹象，奇迹般的存在。', author: 'Jessica Wu', likes: 302, date: '2026-05-06' },
-  { id: 7, url: 'https://picsum.photos/800/600?random=7', title: '雪山巅峰', description: '终年积雪的山峰直插云霄，神圣而庄严。', author: 'Tom Brown', likes: 175, date: '2026-05-07' },
-  { id: 8, url: 'https://picsum.photos/800/600?random=8', title: '田园风光', description: '宁静的乡村田野与农舍，回归自然的怀抱。', author: 'Anna Kim', likes: 134, date: '2026-05-08' },
-]);
+const images = ref([]);
+
+// 从后端获取图片列表
+const fetchImages = async () => {
+  loading.value = true
+  try {
+    const result = await get1('/api/images', { params: { page: 1, pageSize: 50 } })
+    if (result.success && result.data) {
+      const data = result.data.data || []
+      images.value = data.map(img => ({
+        id: img.id,
+        url: 'http://localhost:3030' + img.url,
+        title: img.title,
+        description: img.description || '',
+        author: img.author || '匿名',
+        likes: img.likes || 0,
+        date: img.created_at ? img.created_at.split(' ')[0] : '未知'
+      }))
+    }
+  } catch (e) {
+    console.error('获取图片列表失败:', e)
+  } finally {
+    loading.value = false
+  }
+}
 
 // 计算属性
 const filteredImages = computed(() => {
@@ -262,8 +279,8 @@ const handleFileSelect = (e) => {
   reader.readAsDataURL(file);
 };
 
-// 替换原有的handleUpload方法
-const handleUpload = () => {
+// 真实上传到后端
+const handleUpload = async () => {
   if (!fileData.value) {
     showToast('请先选择图片', 'error');
     return;
@@ -273,33 +290,40 @@ const handleUpload = () => {
     return;
   }
 
-  // 模拟上传请求（实际项目中替换为axios等请求）
-  const formData = new FormData();
-  formData.append('file', fileData.value);
-  formData.append('title', imageTitle.value);
-  formData.append('description', imageDesc.value);
+  uploading.value = true
+  try {
+    // 将文件转为 base64
+    const reader = new FileReader()
+    const base64 = await new Promise((resolve) => {
+      reader.onload = (e) => resolve(e.target.result)
+      reader.readAsDataURL(fileData.value)
+    })
 
-  // 模拟请求成功
-  showToast('上传成功！', 'success');
-  setTimeout(() => {
-    // 重置表单和预览
-    previewUrl.value = '';
-    fileData.value = null;
-    imageTitle.value = '';
-    imageDesc.value = '';
-    showUploadModal.value = false;
-
-    // 添加新图片到列表
-    images.value.unshift({
-      id: Date.now(),
-      url: previewUrl.value,
+    const result = await post1('/api/images/upload', {
       title: imageTitle.value,
       description: imageDesc.value,
-      author: '当前用户',
-      likes: 0,
-      date: new Date().toISOString().split('T')[0]
-    });
-  }, 1000);
+      imageBase64: base64
+    })
+
+    if (result.success && result.data) {
+      showToast('上传成功！', 'success');
+      // 重置表单
+      previewUrl.value = '';
+      fileData.value = null;
+      imageTitle.value = '';
+      imageDesc.value = '';
+      showUploadModal.value = false;
+      // 刷新列表
+      fetchImages()
+    } else {
+      showToast(result.message || '上传失败', 'error');
+    }
+  } catch (e) {
+    console.error('上传失败:', e)
+    showToast('上传失败，请检查网络连接', 'error');
+  } finally {
+    uploading.value = false
+  }
 };
 
 const showToast = (message, type = 'success') => {
@@ -321,9 +345,7 @@ const resetView = () => {
 };
 
 onMounted(() => {
-  setTimeout(() => {
-    loading.value = false;
-  }, 800);
+  fetchImages()
 });
 </script>
 
