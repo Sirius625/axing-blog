@@ -5,9 +5,19 @@
         <img src="https://gips2.baidu.com/it/u=641660390,3943119249&fm=3074&app=3074&f=PNG?w=2560&h=1440"
             alt="Background" class="ken-burns-img" loading="lazy">
 
+        <!-- 移动端底部导航 Tab -->
+        <div class="fixed bottom-20 left-0 right-0 z-40 flex md:hidden bg-[#1a1a2e]/95 backdrop-blur-xl border-t border-white/10">
+            <button v-for="tab in mobileTabs" :key="tab.id" @click="switchTab(tab.id)"
+                :class="activeTab === tab.id ? 'text-purple-400 bg-purple-500/10' : 'text-white/50'"
+                class="flex-1 flex flex-col items-center py-2 text-xs transition-colors">
+                <i :class="tab.icon" class="text-lg mb-0.5"></i>
+                <span>{{ tab.label }}</span>
+            </button>
+        </div>
+
         <!-- 侧边栏 -->
         <aside
-            class="w-64 bg-white/5 backdrop-blur-xl border-r border-white/10 flex flex-col hidden md:flex z-20 shadow-sm transition-all duration-300">
+            class="w-64 bg-white/5 backdrop-blur-xl border-r border-white/10 flex-col hidden md:flex z-20 shadow-sm transition-all duration-300">
             <div class="p-6 flex items-center gap-3 cursor-pointer" @click="switchTab('recommend')">
                 <div
                     class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-purple-500/30">
@@ -66,7 +76,7 @@
         <main class="flex-1 flex flex-col relative overflow-hidden bg-transparent">
             <!-- 顶部搜索与操作栏 -->
             <header
-                class="h-16 bg-white/5 backdrop-blur-xl border-b border-white/10 flex items-center justify-between px-8 z-10 sticky top-0">
+                class="h-16 bg-white/5 backdrop-blur-xl border-b border-white/10 flex items-center justify-between px-4 md:px-8 z-10 sticky top-0">
                 <div class="flex items-center gap-4 flex-1 max-w-2xl relative">
                     <div class="relative w-full group">
                         <i
@@ -114,7 +124,7 @@
             </header>
 
             <!-- 内容滚动区域 -->
-            <div class="flex-1 overflow-y-auto custom-scrollbar p-8 pb-32" ref="scrollContainer"
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 pb-32" ref="scrollContainer"
                 style="margin-bottom: 60px;">
 
                 <!-- 加载状态 -->
@@ -246,21 +256,21 @@
                 </div>
 
                 <!-- 3. 我喜欢的视图 -->
-                <div v-else-if="activeTab === 'likes'" class="space-y-6 animate-fade-in">
+                <div v-else-if="activeTab === 'likes'" class="space-y-4 md:space-y-6 animate-fade-in">
                     <div
-                        class="flex items-center justify-between bg-gradient-to-r from-purple-600 to-pink-600 p-8 rounded-2xl text-white shadow-lg shadow-purple-500/30">
-                        <div class="flex items-center gap-6">
+                        class="flex flex-col md:flex-row items-start md:items-center justify-between bg-gradient-to-r from-purple-600 to-pink-600 p-4 md:p-8 rounded-2xl text-white shadow-lg shadow-purple-500/30 gap-4">
+                        <div class="flex items-center gap-4 md:gap-6">
                             <div
-                                class="w-32 h-32 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center shadow-inner">
-                                <i class="fas fa-heart text-5xl text-white/90"></i>
+                                class="w-16 h-16 md:w-32 md:h-32 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center shadow-inner flex-shrink-0">
+                                <i class="fas fa-heart text-2xl md:text-5xl text-white/90"></i>
                             </div>
                             <div>
-                                <h2 class="text-3xl font-bold mb-2">我喜欢的音乐</h2>
-                                <p class="text-white/80 text-sm">{{ filteredLikedSongs.length }} 首歌曲</p>
+                                <h2 class="text-xl md:text-3xl font-bold mb-1 md:mb-2">我喜欢的音乐</h2>
+                                <p class="text-white/80 text-xs md:text-sm">{{ filteredLikedSongs.length }} 首歌曲</p>
                             </div>
                         </div>
                         <button @click="playAllLiked"
-                            class="px-6 py-3 bg-white text-purple-600 rounded-full font-bold hover:bg-gray-100 transition-colors shadow-lg flex items-center gap-2">
+                            class="w-full md:w-auto px-4 md:px-6 py-2 md:py-3 bg-white text-purple-600 rounded-full font-bold hover:bg-gray-100 transition-colors shadow-lg flex items-center justify-center gap-2 text-sm md:text-base">
                             <i class="fas fa-play"></i> 播放全部
                         </button>
                     </div>
@@ -376,71 +386,71 @@
 
             <!-- 底部播放控制栏 -->
             <footer
-                class="fixed bottom-0 left-0 right-0 h-20 bg-[#1a1a2e]/95 backdrop-blur-xl border-t border-white/10 px-6 flex items-center justify-between z-50 shadow-[0_-8px_30px_rgba(0,0,0,0.3)]">
-                <!-- 当前播放信息 -->
-                <div class="flex items-center gap-4 w-1/4 min-w-[240px]">
-                    <div class="relative w-14 h-14 rounded-lg overflow-hidden shadow-md group cursor-pointer"
+                class="fixed bottom-0 left-0 right-0 h-20 md:h-20 bg-[#1a1a2e]/95 backdrop-blur-xl border-t border-white/10 px-2 md:px-6 flex items-center justify-between z-50 shadow-[0_-8px_30px_rgba(0,0,0,0.3)]">
+                <!-- 当前播放信息 - 移动端只显示封面 -->
+                <div class="flex items-center gap-2 md:gap-4 w-auto md:w-1/4 md:min-w-[240px]">
+                    <div class="relative w-10 h-10 md:w-14 md:h-14 rounded-lg overflow-hidden shadow-md group cursor-pointer flex-shrink-0"
                         @click="toggleLyricModal">
-                        <img :src="currentSong?.al?.picUrl || currentSong?.cover || 'https://picsum.photos/200/200?random=play'"
+                        <img :src="currentSong?.al?.picUrl || 'https://picsum.photos/200/200?random=play'"
                             alt="Album Cover" class="w-full h-full object-cover"
                             :class="{ 'animate-[spin_10s_linear_infinite]': isPlaying }">
                         <div class="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
                     </div>
-                    <div class="hidden sm:block overflow-hidden">
-                        <h4 class="text-sm font-bold text-white/80 truncate hover:underline cursor-pointer"
+                    <div class="hidden sm:block overflow-hidden max-w-[120px] md:max-w-none">
+                        <h4 class="text-xs md:text-sm font-bold text-white/80 truncate hover:underline cursor-pointer"
                             @click="toggleLyricModal">{{ currentSong?.name || '未播放' }}</h4>
-                        <p class="text-xs text-white/50 truncate hover:text-white/70 cursor-pointer">{{
-                            currentSong?.ar?.[0]?.name || currentSong?.artist || '-' }}</p>
+                        <p class="text-[10px] md:text-xs text-white/50 truncate hover:text-white/70 cursor-pointer">{{
+                            currentSong?.ar?.[0]?.name || '-' }}</p>
                     </div>
-                    <button @click="currentSong && toggleLike(currentSong)" class="transition-colors ml-2"
+                    <button @click="currentSong && toggleLike(currentSong)" class="transition-colors ml-1 md:ml-2 flex-shrink-0"
                         :class="currentSong && isLiked(currentSong.id) ? 'text-red-500' : 'text-white/40 hover:text-red-500'">
-                        <i :class="currentSong && isLiked(currentSong.id) ? 'fas' : 'far'" class="fa-heart text-lg"></i>
+                        <i :class="currentSong && isLiked(currentSong.id) ? 'fas' : 'far'" class="fa-heart text-sm md:text-lg"></i>
                     </button>
                 </div>
 
                 <!-- 播放控制按钮 -->
-                <div class="flex flex-col items-center flex-1 max-w-xl px-4">
-                    <div class="flex items-center gap-8 mb-1">
-                        <button class="text-white/40 hover:text-white/70 transition-colors" title="随机播放">
+                <div class="flex flex-col items-center flex-1 max-w-[180px] md:max-w-xl px-1 md:px-4">
+                    <div class="flex items-center gap-3 md:gap-8 mb-1">
+                        <button class="text-white/40 hover:text-white/70 transition-colors hidden md:block" title="随机播放">
                             <i class="fas fa-random text-sm"></i>
                         </button>
                         <button @click="prevSong"
                             class="text-white/60 hover:text-purple-400 transition-colors transform hover:scale-110">
-                            <i class="fas fa-step-backward text-xl"></i>
+                            <i class="fas fa-step-backward text-sm md:text-xl"></i>
                         </button>
                         <button @click="togglePlay"
-                            class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 transform hover:scale-105">
-                            <i :class="isPlaying ? 'fas fa-pause' : 'fas fa-play'" class="text-white ml-0.5"></i>
+                            class="w-8 h-8 md:w-10 md:h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 transform hover:scale-105">
+                            <i :class="isPlaying ? 'fas fa-pause' : 'fas fa-play'" class="text-white ml-0.5 text-xs md:text-base"></i>
                         </button>
                         <button @click="nextSong"
                             class="text-white/60 hover:text-purple-400 transition-colors transform hover:scale-110">
-                            <i class="fas fa-step-forward text-xl"></i>
+                            <i class="fas fa-step-forward text-sm md:text-xl"></i>
                         </button>
-                        <button class="text-white/40 hover:text-white/70 transition-colors" title="循环播放">
+                        <button class="text-white/40 hover:text-white/70 transition-colors hidden md:block" title="循环播放">
                             <i class="fas fa-redo text-sm"></i>
                         </button>
                     </div>
-                    <div class="w-full flex items-center gap-3 text-xs text-white/40 font-mono">
-                        <span class="w-10 text-right">{{ formatTime(currentTime) }}</span>
+                    <div class="w-full flex items-center gap-1 md:gap-3 text-[10px] md:text-xs text-white/40 font-mono">
+                        <span class="w-8 md:w-10 text-right">{{ formatTime(currentTime) }}</span>
                         <div class="flex-1 relative h-1 bg-white/20 rounded-full group cursor-pointer" @click="seek">
                             <div class="absolute top-0 left-0 h-full bg-purple-500 rounded-full pointer-events-none"
                                 :style="{ width: (currentTime / duration * 100) + '%' }"></div>
-                            <div class="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-purple-500 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+                            <div class="absolute top-1/2 -translate-y-1/2 w-2 h-2 md:w-3 md:h-3 bg-white border-2 border-purple-500 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
                                 :style="{ left: (currentTime / duration * 100) + '%' }"></div>
                             <input type="range" min="0" :max="duration || 1" v-model.number="currentTime" @input="seek"
                                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                         </div>
-                        <span class="w-10">{{ formatTime(duration) }}</span>
+                        <span class="w-8 md:w-10">{{ formatTime(duration) }}</span>
                     </div>
                 </div>
 
-                <!-- 音量与其他控制 -->
-                <div class="flex items-center justify-end gap-4 w-1/4 min-w-[200px]">
+                <!-- 音量与其他控制 - 移动端只显示歌词按钮 -->
+                <div class="flex items-center justify-end gap-1 md:gap-4 w-auto md:w-1/4 md:min-w-[200px]">
                     <button @click="toggleLyricModal" class="text-white/40 hover:text-purple-400 transition-colors"
                         :class="{ 'text-purple-400': showLyricModal }" title="歌词">
-                        <i class="fas fa-align-center"></i>
+                        <i class="fas fa-align-center text-sm md:text-base"></i>
                     </button>
-                    <div class="flex items-center gap-2 group w-24">
+                    <div class="items-center gap-2 group w-24 hidden md:flex">
                         <i class="fas fa-volume-up text-white/40 text-sm group-hover:text-white/60"></i>
                         <div class="flex-1 h-1 bg-white/20 rounded-full relative overflow-hidden">
                             <div class="absolute top-0 left-0 h-full bg-white/40 group-hover:bg-purple-500 transition-colors"
@@ -449,7 +459,7 @@
                                 @input="updateVolume" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                         </div>
                     </div>
-                    <button class="text-white/40 hover:text-white/60 transition-colors">
+                    <button class="text-white/40 hover:text-white/60 transition-colors hidden md:block">
                         <i class="fas fa-list-ul"></i>
                     </button>
                 </div>
@@ -525,6 +535,14 @@ interface LyricLine {
     text: string
 }
 
+
+// 移动端底部导航 Tab 配置
+const mobileTabs = [
+    { id: 'recommend' as const, label: '推荐', icon: 'fas fa-compass' },
+    { id: 'toplist' as const, label: '排行榜', icon: 'fas fa-trophy' },
+    { id: 'likes' as const, label: '喜欢', icon: 'fas fa-heart' },
+    { id: 'history' as const, label: '历史', icon: 'fas fa-history' },
+]
 
 const playlists = ref<Playlist[]>([])
 const toplistData = ref<any[]>([])
