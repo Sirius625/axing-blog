@@ -256,7 +256,7 @@
                             </div>
                             <div>
                                 <h2 class="text-3xl font-bold mb-2">我喜欢的音乐</h2>
-                                <p class="text-white/80 text-sm">{{ likedSongs.length }} 首歌曲</p>
+                                <p class="text-white/80 text-sm">{{ filteredLikedSongs.length }} 首歌曲</p>
                             </div>
                         </div>
                         <button @click="playAllLiked"
@@ -265,10 +265,22 @@
                         </button>
                     </div>
 
-                    <div v-if="likedSongs.length === 0"
+                    <!-- 我喜欢的搜索栏 -->
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/40"></i>
+                        <input v-model="likedSearchQuery" type="text" placeholder="在喜欢的歌曲中搜索..."
+                            class="w-full pl-12 pr-10 py-3 bg-white/5 border border-white/10 rounded-xl text-sm focus:bg-white/10 focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 outline-none transition-all duration-300 placeholder-white/30 text-white">
+                        <button v-if="likedSearchQuery" @click="likedSearchQuery = ''"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70">
+                            <i class="fas fa-times-circle"></i>
+                        </button>
+                    </div>
+
+                    <div v-if="filteredLikedSongs.length === 0"
                         class="text-center py-20 text-white/40 bg-white/5 rounded-xl border border-dashed border-white/10">
-                        <i class="fas fa-music text-4xl mb-4 opacity-30"></i>
-                        <p>暂无喜欢的歌曲，快去添加吧！</p>
+                        <i v-if="likedSongs.length === 0" class="fas fa-music text-4xl mb-4 opacity-30"></i>
+                        <i v-else class="fas fa-search text-4xl mb-4 opacity-30"></i>
+                        <p>{{ likedSongs.length === 0 ? '暂无喜欢的歌曲，快去添加吧！' : '未找到匹配的歌曲' }}</p>
                     </div>
 
                     <div v-else class="bg-white/5 backdrop-blur-sm rounded-xl shadow-sm border border-white/10 overflow-hidden">
@@ -283,7 +295,7 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-white/10">
-                                <tr v-for="(song, index) in likedSongs" :key="song.id"
+                                <tr v-for="(song, index) in filteredLikedSongs" :key="song.id"
                                     class="hover:bg-white/5 transition-colors group">
                                     <td class="px-6 py-4 text-white/40 text-sm">{{ index + 1 }}</td>
                                     <td class="px-6 py-4">
@@ -484,7 +496,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { getPersonalized, getToplist, getTetail, getSongUrl, getLyric, getSearch } from '@/api/http'
 import { toggleLikeSong, getSongs, addHistory, getHistory, deleteHistory, playSongCount } from '@/api/http1'
 
@@ -522,6 +534,7 @@ const currentTime = ref(0)
 const duration = ref(0)
 const volume = ref(0.8)
 const searchQuery = ref('')
+const likedSearchQuery = ref('') // 我喜欢的列表搜索
 const loading = ref(false)
 const error = ref<string | null>(null)
 const activeTab = ref<'recommend' | 'toplist' | 'likes' | 'history' | 'search'>('recommend')
@@ -530,6 +543,18 @@ const activeTab = ref<'recommend' | 'toplist' | 'likes' | 'history' | 'search'>(
 const likedSongs = ref<Song[]>([])
 const historySongs = ref<Song[]>([])
 const searchHistory = ref<string[]>([])
+
+// 我喜欢的列表过滤（本地搜索）
+const filteredLikedSongs = computed(() => {
+    const query = likedSearchQuery.value.trim().toLowerCase()
+    if (!query) return likedSongs.value
+    return likedSongs.value.filter(song => {
+        const nameMatch = song.name.toLowerCase().includes(query)
+        const artistMatch = song.ar?.[0]?.name?.toLowerCase().includes(query)
+        const albumMatch = song.al?.name?.toLowerCase().includes(query)
+        return nameMatch || artistMatch || albumMatch
+    })
+})
 
 const showLyricModal = ref(false)
 const showSearchHistory = ref(false)
