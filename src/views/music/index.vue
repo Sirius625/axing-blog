@@ -3,7 +3,7 @@
         class="flex h-screen text-gray-200 font-sans overflow-hidden selection:bg-purple-500 selection:text-white pt-16"
         style="background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);">
         <img src="https://gips2.baidu.com/it/u=641660390,3943119249&fm=3074&app=3074&f=PNG?w=2560&h=1440"
-            alt="Background" class="ken-burns-img">
+            alt="Background" class="ken-burns-img" loading="lazy">
 
         <!-- 侧边栏 -->
         <aside
@@ -990,26 +990,33 @@ onMounted(() => {
     const savedSearchHistory = localStorage.getItem('search_history')
     if (savedSearchHistory) searchHistory.value = JSON.parse(savedSearchHistory)
 
-    audioPlayer.addEventListener('timeupdate', () => {
-        currentTime.value = audioPlayer.currentTime
-        duration.value = audioPlayer.duration || 0
+    // 使用 requestAnimationFrame 节流歌词更新，避免每帧都执行 findIndex
+    let rafId: number | null = null
+    const onTimeUpdate = () => {
+        if (rafId !== null) return
+        rafId = requestAnimationFrame(() => {
+            rafId = null
+            currentTime.value = audioPlayer.currentTime
+            duration.value = audioPlayer.duration || 0
 
-        if (lyrics.value.length > 0) {
-            const idx = lyrics.value.findIndex((l, i) => {
-                const next = lyrics.value[i + 1]
-                return audioPlayer.currentTime >= l.time && (!next || audioPlayer.currentTime < next.time)
-            })
-            if (idx !== -1 && idx !== currentLyricIndex.value) {
-                currentLyricIndex.value = idx
-                const container = document.querySelector('.custom-scrollbar-no-track')
-                const activeLine = document.querySelector('.lyric-active')
-                if (container && activeLine) {
-                    const offset = (activeLine as HTMLElement).offsetTop - container.clientHeight / 2
-                    container.scrollTo({ top: offset, behavior: 'smooth' })
+            if (lyrics.value.length > 0) {
+                const idx = lyrics.value.findIndex((l, i) => {
+                    const next = lyrics.value[i + 1]
+                    return audioPlayer.currentTime >= l.time && (!next || audioPlayer.currentTime < next.time)
+                })
+                if (idx !== -1 && idx !== currentLyricIndex.value) {
+                    currentLyricIndex.value = idx
+                    const container = document.querySelector('.custom-scrollbar-no-track')
+                    const activeLine = document.querySelector('.lyric-active')
+                    if (container && activeLine) {
+                        const offset = (activeLine as HTMLElement).offsetTop - container.clientHeight / 2
+                        container.scrollTo({ top: offset, behavior: 'smooth' })
+                    }
                 }
             }
-        }
-    })
+        })
+    }
+    audioPlayer.addEventListener('timeupdate', onTimeUpdate)
 
     audioPlayer.addEventListener('ended', () => {
         isPlaying.value = false
@@ -1024,7 +1031,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* 动态图片层 */
+/* 动态图片层 - 使用 will-change 和 translateZ 开启 GPU 加速 */
 .ken-burns-img {
     position: absolute;
     top: 0;
@@ -1032,18 +1039,20 @@ onUnmounted(() => {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* 关键动画：20秒内从1.0倍放大到1.15倍，并轻微平移 */
-    animation: kenBurns 20s ease-in-out infinite alternate;
+    will-change: transform;
+    transform: translateZ(0);
+    animation: kenBurns 30s ease-in-out infinite alternate;
+    pointer-events: none;
 }
 
 
 @keyframes kenBurns {
     0% {
-        transform: scale(1) translate(0, 0);
+        transform: scale(1) translate(0, 0) translateZ(0);
     }
 
     100% {
-        transform: scale(1.15) translate(-2%, -2%);
+        transform: scale(1.08) translate(-1%, -1%) translateZ(0);
     }
 }
 
