@@ -15,17 +15,26 @@
                 {{ item.text }}
             </router-link>
         </nav>
-        <button id="toggle-settings" class="nav-right" @click="$emit('open-login')">
-            {{ username }}
-        </button>
+        <div class="nav-right-wrapper">
+            <button id="toggle-settings" class="nav-right" @click="handleUserClick">
+                {{ username }}
+            </button>
+            <!-- 退出登录下拉菜单 -->
+            <div v-if="showLogoutMenu" class="dropdown-menu">
+                <button class="dropdown-item" @click="handleLogout">退出登录</button>
+            </div>
+        </div>
     </header>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import { useAuthStore } from '@/store'
 
-defineEmits<{
+const emit = defineEmits<{
     (e: 'open-login'): void
 }>()
+
+const authStore = useAuthStore()
 
 const navItems = [
     { id: 1, text: '首页', name: 'home' },
@@ -33,8 +42,41 @@ const navItems = [
     { id: 3, text: '知识', name: 'knowledge' }
 ]
 
-let username = localStorage.getItem('username') || '登陆'
+const username = ref(localStorage.getItem('username') || '登陆')
+const showLogoutMenu = ref(false)
 
+// 点击用户按钮
+const handleUserClick = () => {
+    if (authStore.isLoggedIn) {
+        showLogoutMenu.value = !showLogoutMenu.value
+    } else {
+        emit('open-login')
+    }
+}
+
+// 退出登录
+const handleLogout = () => {
+    authStore.logout()
+    username.value = '登陆'
+    showLogoutMenu.value = false
+    window.location.reload()
+}
+
+// 点击页面其他区域关闭下拉菜单
+const handleClickOutside = (e: MouseEvent) => {
+    const target = e.target as HTMLElement
+    if (!target.closest('.nav-right-wrapper')) {
+        showLogoutMenu.value = false
+    }
+}
+
+onMounted(() => {
+    document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+    document.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 
@@ -82,6 +124,44 @@ let username = localStorage.getItem('username') || '登陆'
 
 .font-light {
     color: antiquewhite;
+}
+
+/* 用户按钮容器 */
+.nav-right-wrapper {
+    position: relative;
+    width: 100px;
+}
+
+/* 下拉菜单 */
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 120px;
+    overflow: hidden;
+    z-index: 10000;
+    animation: fadeIn 0.2s ease;
+}
+
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    border: none;
+    background: none;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+    background: #f5f5f5;
+    color: #e74c3c;
 }
 
 #canvas-container {
