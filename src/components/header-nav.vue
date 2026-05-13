@@ -42,8 +42,10 @@ const navItems = [
     { id: 3, text: '知识', name: 'knowledge' }
 ]
 
-const username = ref(localStorage.getItem('username') || '登陆')
 const showLogoutMenu = ref(false)
+
+// 从 authStore 获取用户名，优先使用 user.name，其次 localStorage 中的 username
+const username = ref(authStore.user?.name || localStorage.getItem('username') || '登陆')
 
 // 点击用户按钮
 const handleUserClick = () => {
