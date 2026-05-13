@@ -58,7 +58,7 @@ defineProps<{
 }>()
 
 defineEmits<{
-  switchTab: [tab: string]
+  switchTab: [tab: 'recommend' | 'toplist' | 'likes' | 'history' | 'search']
 }>()
 </script>
 
