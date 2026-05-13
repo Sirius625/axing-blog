@@ -1,5 +1,5 @@
 <template>
-  <div class="knowledge-app">
+  <div class="knowledge-app pt-16">
     <!-- 顶部标题区 -->
     <header class="knowledge-header">
       <div class="header-content">

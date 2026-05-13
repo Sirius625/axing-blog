@@ -1,5 +1,5 @@
 <template>
-  <div class="gallery-app" :class="{ 'dark-mode': isDark }">
+  <div class="gallery-app pt-16" :class="{ 'dark-mode': isDark }">
     <!-- 头部导航 -->
     <header class="app-header">
       <div class="header-content">
