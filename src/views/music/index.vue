@@ -425,7 +425,7 @@ const playSong = async (song: Song) => {
       audioPlayer.play()
       isPlaying.value = true
       fetchLyrics(song.id)
-      playSongCount(song.id)
+      playSongCount(song)
     } else {
       console.warn('No URL found, skipping to next')
       nextSong()

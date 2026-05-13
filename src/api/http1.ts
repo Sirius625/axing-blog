@@ -80,12 +80,18 @@ export const deleteHistory = async () => {
 
 /**
  * 记录播放并同步更新播放次数
- * GET /songs/play-sync/:id
+ * POST /api/songs/play-sync/:id
  * 逻辑：
  * 1. 在 history_songs 中记录/更新播放信息，并将 play_count + 1
  * 2. 检查 liked_songs 中是否存在该歌曲，如果存在，也将 play_count + 1
  */
-export const playSongCount = async (id: number) => {
-  const result = await post1<{ data: any }>('/api/songs/play-sync/' + id)
+export const playSongCount = async (song: SongData) => {
+  const result = await post1<{ data: any }>('/api/songs/play-sync/' + song.id, {
+    id: song.id,
+    name: song.name,
+    ar: song.ar,
+    al: song.al,
+    dt: song.dt
+  })
   return result.data || { data: null }
 }
