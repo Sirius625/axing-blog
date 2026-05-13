@@ -1,68 +1,23 @@
 <template>
   <div class="knowledge-app pt-16">
     <!-- 顶部标题区 -->
-    <header class="knowledge-header">
-      <div class="header-content">
-        <div class="header-icon">
-          <i class="fas fa-code"></i>
-        </div>
-        <div>
-          <h1>前端知识体系</h1>
-          <p class="header-subtitle">Frontend Knowledge Framework</p>
-        </div>
-      </div>
-      <div class="header-stats">
-        <div class="stat-item">
-          <span class="stat-number">{{ totalItems }}</span>
-          <span class="stat-label">知识点</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">{{ categories.length }}</span>
-          <span class="stat-label">分类</span>
-        </div>
-      </div>
-    </header>
+    <KnowledgeHeader :totalItems="totalItems" :categoryCount="categories.length" />
 
     <!-- 搜索过滤 -->
-    <div class="filter-bar">
-      <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input v-model="searchQuery" type="text" placeholder="搜索知识点..." class="search-input">
-      </div>
-      <div class="category-tabs">
-        <button v-for="cat in categories" :key="cat.id"
-          :class="['tab-btn', { active: activeCategory === cat.id }]"
-          @click="activeCategory = cat.id">
-          <i :class="cat.icon"></i>
-          <span>{{ cat.name }}</span>
-        </button>
-        <button :class="['tab-btn', { active: activeCategory === 'all' }]"
-          @click="activeCategory = 'all'">
-          <i class="fas fa-th-large"></i>
-          <span>全部</span>
-        </button>
-      </div>
-    </div>
+    <KnowledgeFilter
+      v-model="searchQuery"
+      v-model:activeCategory="activeCategory"
+      :categories="categories"
+    />
 
     <!-- 知识卡片网格 -->
     <div class="knowledge-grid">
-      <div v-for="item in filteredItems" :key="item.id" class="knowledge-card"
-        @click="openDetail(item)">
-        <div class="card-header" :style="{ background: item.color }">
-          <i :class="item.icon"></i>
-          <span class="card-badge">{{ item.category }}</span>
-        </div>
-        <div class="card-body">
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.description }}</p>
-        </div>
-        <div class="card-footer">
-          <div class="tags">
-            <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
-          </div>
-          <span class="card-arrow"><i class="fas fa-arrow-right"></i></span>
-        </div>
-      </div>
+      <KnowledgeCard
+        v-for="item in filteredItems"
+        :key="item.id"
+        :item="item"
+        @select="openDetail"
+      />
     </div>
 
     <!-- 空状态 -->
@@ -73,58 +28,19 @@
     </div>
 
     <!-- 详情弹窗 -->
-    <transition name="modal-fade">
-      <div v-if="selectedItem" class="modal-overlay" @click.self="closeModal">
-        <div class="modal-container">
-          <div class="modal-header" :style="{ background: selectedItem.color }">
-            <div class="modal-header-content">
-              <i :class="selectedItem.icon"></i>
-              <div>
-                <h2>{{ selectedItem.title }}</h2>
-                <span class="modal-category">{{ selectedItem.category }}</span>
-              </div>
-            </div>
-            <button class="modal-close" @click="closeModal">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p class="modal-description">{{ selectedItem.description }}</p>
-            <div class="modal-section">
-              <h4><i class="fas fa-tags"></i> 相关标签</h4>
-              <div class="tags">
-                <span v-for="tag in selectedItem.tags" :key="tag" class="tag tag-lg">{{ tag }}</span>
-              </div>
-            </div>
-            <div class="modal-section">
-              <h4><i class="fas fa-list"></i> 核心知识点</h4>
-              <ul class="knowledge-list">
-                <li v-for="(point, index) in selectedItem.points" :key="index">
-                  <i class="fas fa-check-circle"></i>
-                  <span>{{ point }}</span>
-                </li>
-              </ul>
-            </div>
-            <div class="modal-section">
-              <h4><i class="fas fa-link"></i> 推荐资源</h4>
-              <div class="resource-links">
-                <a v-for="(res, index) in selectedItem.resources" :key="index" :href="res.url"
-                  target="_blank" class="resource-link">
-                  <i :class="res.icon"></i>
-                  <span>{{ res.name }}</span>
-                  <i class="fas fa-external-link-alt"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </transition>
+    <KnowledgeModal
+      :item="selectedItem"
+      @close="closeModal"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import KnowledgeHeader from '@/components/knowledge/KnowledgeHeader.vue'
+import KnowledgeFilter from '@/components/knowledge/KnowledgeFilter.vue'
+import KnowledgeCard from '@/components/knowledge/KnowledgeCard.vue'
+import KnowledgeModal from '@/components/knowledge/KnowledgeModal.vue'
 
 interface KnowledgeItem {
   id: number
@@ -427,7 +343,6 @@ const openDetail = (item: KnowledgeItem) => {
   document.body.style.overflow = 'hidden'
 }
 
-// 点击遮罩关闭时恢复滚动
 const closeModal = () => {
   selectedItem.value = null
   document.body.style.overflow = ''
@@ -443,151 +358,6 @@ const closeModal = () => {
   padding-bottom: 2rem;
 }
 
-/* 头部 */
-.knowledge-header {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 2rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.header-content {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.header-icon {
-  width: 3.5rem;
-  height: 3.5rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border-radius: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  color: white;
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-}
-
-.header-content h1 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: white;
-  margin: 0;
-}
-
-.header-subtitle {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.875rem;
-  margin: 0.25rem 0 0;
-  letter-spacing: 0.05em;
-}
-
-.header-stats {
-  display: flex;
-  gap: 2rem;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-number {
-  display: block;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: white;
-}
-
-.stat-label {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* 过滤栏 */
-.filter-bar {
-  padding: 1.5rem 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.search-box {
-  position: relative;
-  max-width: 400px;
-  margin-bottom: 1rem;
-}
-
-.search-box i {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.3);
-}
-
-.search-input {
-  width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.75rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.75rem;
-  color: white;
-  font-size: 0.9rem;
-  outline: none;
-  transition: all 0.3s;
-}
-
-.search-input:focus {
-  border-color: rgba(102, 126, 234, 0.5);
-  background: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 20px rgba(102, 126, 234, 0.1);
-}
-
-.search-input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
-}
-
-.category-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.tab-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 2rem;
-  color: rgba(255, 255, 255, 0.6);
-  cursor: pointer;
-  transition: all 0.3s;
-  font-size: 0.85rem;
-}
-
-.tab-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-.tab-btn.active {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border-color: transparent;
-  color: white;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-}
-
-/* 知识卡片网格 */
 .knowledge-grid {
   max-width: 1400px;
   margin: 0 auto;
@@ -597,94 +367,6 @@ const closeModal = () => {
   gap: 1.25rem;
 }
 
-.knowledge-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1rem;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-}
-
-.knowledge-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-}
-
-.card-header {
-  padding: 1.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: white;
-  font-size: 1.25rem;
-}
-
-.card-badge {
-  font-size: 0.7rem;
-  padding: 0.25rem 0.75rem;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 1rem;
-  backdrop-filter: blur(4px);
-}
-
-.card-body {
-  padding: 1.25rem;
-}
-
-.card-body h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: white;
-  margin: 0 0 0.5rem;
-}
-
-.card-body p {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
-  line-height: 1.5;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.card-footer {
-  padding: 0.75rem 1.25rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.tag {
-  font-size: 0.7rem;
-  padding: 0.2rem 0.5rem;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 0.35rem;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.card-arrow {
-  color: rgba(255, 255, 255, 0.2);
-  transition: all 0.3s;
-}
-
-.knowledge-card:hover .card-arrow {
-  color: rgba(255, 255, 255, 0.6);
-  transform: translateX(4px);
-}
-
-/* 空状态 */
 .empty-state {
   text-align: center;
   padding: 4rem 2rem;
@@ -709,227 +391,10 @@ const closeModal = () => {
   font-size: 0.9rem;
 }
 
-/* 详情弹窗 */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
-}
-
-.modal-container {
-  background: #1a1a2e;
-  border-radius: 1rem;
-  width: 100%;
-  max-width: 560px;
-  max-height: 85vh;
-  overflow-y: auto;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.modal-header {
-  padding: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  color: white;
-}
-
-.modal-header-content {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.modal-header-content i {
-  font-size: 1.5rem;
-}
-
-.modal-header-content h2 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin: 0;
-}
-
-.modal-category {
-  font-size: 0.75rem;
-  opacity: 0.7;
-}
-
-.modal-close {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: white;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
-
-.modal-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.modal-body {
-  padding: 1.5rem;
-}
-
-.modal-description {
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
-  margin: 0 0 1.5rem;
-}
-
-.modal-section {
-  margin-bottom: 1.5rem;
-}
-
-.modal-section h4 {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin: 0 0 0.75rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.modal-section h4 i {
-  font-size: 0.75rem;
-}
-
-.tag-lg {
-  font-size: 0.8rem;
-  padding: 0.3rem 0.75rem;
-}
-
-.knowledge-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.knowledge-list li {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.knowledge-list li:last-child {
-  border-bottom: none;
-}
-
-.knowledge-list li i {
-  color: #4ade80;
-  font-size: 0.85rem;
-}
-
-.resource-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.resource-link {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 0.5rem;
-  color: rgba(255, 255, 255, 0.7);
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.resource-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.resource-link span {
-  flex: 1;
-  font-size: 0.85rem;
-}
-
-.resource-link .fa-external-link-alt {
-  font-size: 0.7rem;
-  opacity: 0.4;
-}
-
-/* 弹窗动画 */
-.modal-fade-enter-active,
-.modal-fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.modal-fade-enter-from,
-.modal-fade-leave-to {
-  opacity: 0;
-}
-
-/* 自定义滚动条 */
-.modal-container::-webkit-scrollbar {
-  width: 6px;
-}
-
-.modal-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.modal-container::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-}
-
-.modal-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* 响应式 */
 @media (max-width: 768px) {
-  .knowledge-header {
-    padding: 1.5rem 1rem;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .header-stats {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .filter-bar {
-    padding: 1rem;
-  }
-
   .knowledge-grid {
     padding: 0 1rem;
     grid-template-columns: 1fr;
-  }
-
-  .modal-container {
-    max-height: 90vh;
-    margin: 0.5rem;
   }
 }
 </style>

@@ -1,22 +1,21 @@
 <template>
-  <div class="gallery-app pt-16" :class="{ 'dark-mode': isDark }">
-    <!-- 头部导航 -->
+  <div :class="['gallery-app', { 'dark-mode': isDark }]">
+    <!-- 顶部导航栏 -->
     <header class="app-header">
       <div class="header-content">
         <div class="logo-area" @click="resetView">
           <div class="logo-icon">
-            <i class="fa-solid fa-layer-group"></i>
+            <i class="fas fa-images"></i>
           </div>
-          <h1 @click="handletop">Lumina Gallery</h1>
+          <h1>图片画廊</h1>
         </div>
-
         <div class="header-actions">
-          <button @click="toggleTheme" class="icon-btn" title="切换主题">
-            <i :class="isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon'"></i>
+          <button class="icon-btn" @click="toggleTheme" :title="isDark ? '切换亮色模式' : '切换暗色模式'">
+            <i :class="isDark ? 'fas fa-sun' : 'fas fa-moon'"></i>
           </button>
-          <button @click="showUploadModal = true" class="primary-btn">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
-            <span>上传作品</span>
+          <button class="primary-btn" @click="showUploadModal = true">
+            <i class="fas fa-upload"></i>
+            <span>上传图片</span>
           </button>
         </div>
       </div>
@@ -27,23 +26,34 @@
       <!-- 控制栏 -->
       <div class="control-bar">
         <div class="search-box">
-          <i class="fa-solid fa-search search-icon"></i>
-          <input v-model="searchQuery" type="text" placeholder="搜索图片标题或描述..." class="search-input">
+          <i class="fas fa-search search-icon"></i>
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="搜索图片标题或描述..."
+            class="search-input"
+          />
         </div>
-
         <div class="filter-controls">
           <select v-model="sortBy" class="select-input">
             <option value="newest">最新上传</option>
-            <option value="popular">最受欢迎</option>
-            <option value="name">名称排序</option>
+            <option value="popular">最多点赞</option>
+            <option value="name">按名称</option>
           </select>
-
           <div class="view-toggle">
-            <button @click="viewMode = 'grid'" :class="['toggle-btn', { active: viewMode === 'grid' }]" title="网格视图">
-              <i class="fa-solid fa-grid-2"></i>
+            <button
+              :class="['toggle-btn', { active: viewMode === 'grid' }]"
+              @click="viewMode = 'grid'"
+              title="网格视图"
+            >
+              <i class="fas fa-th"></i>
             </button>
-            <button @click="viewMode = 'list'" :class="['toggle-btn', { active: viewMode === 'list' }]" title="列表视图">
-              <i class="fa-solid fa-list"></i>
+            <button
+              :class="['toggle-btn', { active: viewMode === 'list' }]"
+              @click="viewMode = 'list'"
+              title="列表视图"
+            >
+              <i class="fas fa-list"></i>
             </button>
           </div>
         </div>
@@ -51,152 +61,86 @@
 
       <!-- 状态栏 -->
       <div class="status-bar">
-        <span class="count-text">共找到 <strong>{{ filteredImages.length }}</strong> 张图片</span>
+        <span class="count-text">
+          共 <strong>{{ filteredImages.length }}</strong> 张图片
+        </span>
         <span v-if="loading" class="loading-indicator">
-          <i class="fa-solid fa-circle-notch fa-spin"></i> 加载中...
+          <i class="fas fa-spinner fa-spin"></i> 加载中...
         </span>
       </div>
 
-      <!-- 图片列表 -->
-      <transition-group name="list" :tag="viewMode === 'grid' ? 'div' : 'div'" :class="['image-container', viewMode]">
-        <div v-for="image in filteredImages" :key="image.id" class="image-card" @click="openPreview(image)">
-          <div class="image-wrapper">
-            <img :src="image.url" :alt="image.title" class="card-image" loading="lazy">
-            <div class="image-overlay">
-              <div class="overlay-content">
-                <p class="overlay-title">{{ image.title }}</p>
-                <p class="overlay-author">{{ image.author }}</p>
-              </div>
-            </div>
-            <div class="like-badge">
-              <i class="fa-solid fa-heart"></i> {{ image.likes }}
-            </div>
-          </div>
-
-          <div class="card-info">
-            <div class="info-header">
-              <h3 class="info-title">{{ image.title }}</h3>
-              <span class="info-date">{{ formatDate(image.date) }}</span>
-            </div>
-            <p class="info-desc">{{ image.description }}</p>
-          </div>
-        </div>
-      </transition-group>
+      <!-- 图片网格 -->
+      <div v-if="filteredImages.length > 0" :class="['image-container', viewMode]">
+        <ImageCard
+          v-for="img in filteredImages"
+          :key="img.id"
+          :image="img"
+          @preview="openPreview"
+        />
+      </div>
 
       <!-- 空状态 -->
-      <div v-if="filteredImages.length === 0 && !loading" class="empty-state">
+      <div v-else class="empty-state">
         <div class="empty-icon">
-          <i class="fa-regular fa-image"></i>
+          <i class="fas fa-images"></i>
         </div>
-        <h3>未找到相关图片</h3>
-        <p>尝试更换搜索关键词或清除筛选条件</p>
-        <button @click="searchQuery = ''" class="link-btn">清除搜索</button>
+        <h3>暂无图片</h3>
+        <p>点击上方「上传图片」按钮分享你的作品</p>
+        <button class="link-btn" @click="showUploadModal = true">立即上传</button>
       </div>
     </main>
 
-    <!-- 上传模态框 -->
-    <transition name="modal-fade">
-      <div v-if="showUploadModal" class="modal-overlay">
-        <div class="modal-backdrop" @click="showUploadModal = false"></div>
-        <div class="modal-container">
-          <div class="modal-header">
-            <h3>上传新作品</h3>
-            <button @click="showUploadModal = false" class="close-btn">
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-          </div>
+    <!-- 上传弹窗 -->
+    <ImageUploadModal
+      ref="uploadModalRef"
+      :visible="showUploadModal"
+      @close="showUploadModal = false"
+      @upload="handleUpload"
+    />
 
-          <!-- 替换原有的上传区域 -->
-          <div class="upload-zone">
-            <div class="file-picker">
-              <input type="file" accept="image/jpeg,image/png,image/webp" class="file-input" @change="handleFileSelect"
-                ref="fileInput">
-              <div class="picker-text">点击选择图片或拖拽至此</div>
-            </div>
-            <div v-if="previewUrl" class="preview-area">
-              <img :src="previewUrl" alt="预览图" class="preview-img">
-              <button @click="previewUrl = null" class="remove-btn">移除</button>
-            </div>
-            <div class="form-group">
-              <label>图片标题</label>
-              <input type="text" class="form-input" v-model="imageTitle">
-            </div>
-            <div class="form-group">
-              <label>图片描述</label>
-              <textarea class="form-textarea" v-model="imageDesc"></textarea>
-            </div>
-          </div>
-
-
-          <div class="modal-footer">
-            <button @click="showUploadModal = false" class="secondary-btn">取消</button>
-            <button @click="handleUpload" class="primary-btn">
-              <i class="fa-solid fa-check"></i> 确认上传
-            </button>
-          </div>
-        </div>
-      </div>
-    </transition>
-
-    <!-- 预览模态框 -->
-    <transition name="modal-fade">
-      <div v-if="previewImage" class="preview-overlay" @click.self="closePreview">
-        <button @click="closePreview" class="preview-close">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-
-        <div class="preview-content">
-          <img :src="previewImage.url" :alt="previewImage.title" class="preview-image">
-          <div class="preview-info">
-            <h2 class="preview-title">{{ previewImage.title }}</h2>
-            <p class="preview-desc">{{ previewImage.description }}</p>
-            <div class="preview-meta">
-              <span><i class="fa-regular fa-user"></i> {{ previewImage.author }}</span>
-              <span><i class="fa-regular fa-calendar"></i> {{ formatDate(previewImage.date) }}</span>
-              <span class="meta-likes"><i class="fa-solid fa-heart"></i> {{ previewImage.likes }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </transition>
+    <!-- 预览弹窗 -->
+    <ImagePreviewModal
+      :image="previewImage"
+      @close="closePreview"
+    />
 
     <!-- Toast 提示 -->
     <transition name="toast-slide">
       <div v-if="toast.show" :class="['toast', toast.type]">
-        <i :class="toast.type === 'success' ? 'fa-solid fa-check-circle' : 'fa-solid fa-info-circle'"></i>
+        <i :class="toast.type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle'"></i>
         <span>{{ toast.message }}</span>
       </div>
     </transition>
   </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from 'vue';
-import { post1, get1, del1 } from '@/api/index1'
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import { post1 } from '@/api/index1'
+import ImageCard from '@/components/home/ImageCard.vue'
+import ImageUploadModal from '@/components/home/ImageUploadModal.vue'
+import ImagePreviewModal from '@/components/home/ImagePreviewModal.vue'
 
-// 状态定义
-const isDark = ref(false);
-const searchQuery = ref('');
-const sortBy = ref('newest');
-const viewMode = ref('grid');
-const showUploadModal = ref(false);
-const previewImage = ref(null);
-const loading = ref(true);
-const uploading = ref(false);
-const toast = ref({ show: false, message: '', type: 'success' });
-const handletop = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-};
-const images = ref([]);
+// 状态
+const images = ref<any[]>([])
+const loading = ref(false)
+const searchQuery = ref('')
+const sortBy = ref('newest')
+const viewMode = ref('grid')
+const isDark = ref(false)
+const showUploadModal = ref(false)
+const previewImage = ref<any>(null)
+const uploadModalRef = ref<InstanceType<typeof ImageUploadModal> | null>(null)
 
-// 从后端获取图片列表
+const toast = ref({ show: false, message: '', type: 'success' })
+
+// 获取图片列表
 const fetchImages = async () => {
   loading.value = true
   try {
-    const result = await get1('/api/images', { params: { page: 1, pageSize: 50 } })
-    if (result.success && result.data) {
-      const data = result.data.data || []
-      images.value = data.map(img => ({
+    const res = await post1('/api/images/list', { page: 1, pageSize: 100 })
+    if (res.success && res.data) {
+      images.value = res.data.map((img: any) => ({
         id: img.id,
         url: 'http://localhost:3030' + img.url,
         title: img.title,
@@ -218,186 +162,80 @@ const filteredImages = computed(() => {
   let result = images.value.filter(img =>
     img.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
     img.description.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
+  )
 
   if (sortBy.value === 'popular') {
-    result.sort((a, b) => b.likes - a.likes);
+    result.sort((a, b) => b.likes - a.likes)
   } else if (sortBy.value === 'name') {
-    result.sort((a, b) => a.title.localeCompare(b.title));
+    result.sort((a, b) => a.title.localeCompare(b.title))
   } else {
-    result.sort((a, b) => new Date(b.date) - new Date(a.date));
+    result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   }
-  return result;
-});
+  return result
+})
 
 // 方法
 const toggleTheme = () => {
-  isDark.value = !isDark.value;
-};
+  isDark.value = !isDark.value
+}
 
-const openPreview = (image) => {
-  previewImage.value = image;
-  document.body.style.overflow = 'hidden';
-};
+const openPreview = (image: any) => {
+  previewImage.value = image
+  document.body.style.overflow = 'hidden'
+}
 
 const closePreview = () => {
-  previewImage.value = null;
-  document.body.style.overflow = '';
-};
+  previewImage.value = null
+  document.body.style.overflow = ''
+}
 
-
-
-// 新增状态变量
-const previewUrl = ref(''); // 存储预览图地址
-const fileData = ref(null); // 存储文件二进制数据
-const imageTitle = ref(''); // 图片标题
-const imageDesc = ref(''); // 图片描述
-
-// 文件选择事件处理
-const handleFileSelect = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  // 校验文件大小（最大5MB）
-  if (file.size > 5 * 1024 * 1024) {
-    showToast('文件大小不能超过5MB', 'error');
-    return;
-  }
-
-  // 校验文件类型
-  if (!file.type.startsWith('image/')) {
-    showToast('仅支持JPG/PNG/WebP格式', 'error');
-    return;
-  }
-
-  // 生成预览图
-  const reader = new FileReader();
-  reader.onload = (event) => {
-    previewUrl.value = event.target.result;
-    fileData.value = file;
-  };
-  reader.readAsDataURL(file);
-};
-
-// 真实上传到后端
-const handleUpload = async () => {
-  if (!fileData.value) {
-    showToast('请先选择图片', 'error');
-    return;
-  }
-  if (!imageTitle.value) {
-    showToast('请输入图片标题', 'error');
-    return;
-  }
-
-  uploading.value = true
+const handleUpload = async (data: { title: string; description: string; file: File }) => {
   try {
-    // 将文件转为 base64
     const reader = new FileReader()
-    const base64 = await new Promise((resolve) => {
-      reader.onload = (e) => resolve(e.target.result)
-      reader.readAsDataURL(fileData.value)
+    const base64 = await new Promise<string>((resolve) => {
+      reader.onload = (e) => resolve(e.target?.result as string)
+      reader.readAsDataURL(data.file)
     })
 
     const result = await post1('/api/images/upload', {
-      title: imageTitle.value,
-      description: imageDesc.value,
+      title: data.title,
+      description: data.description,
       imageBase64: base64
     })
 
     if (result.success && result.data) {
-      showToast('上传成功！', 'success');
-      // 重置表单
-      previewUrl.value = '';
-      fileData.value = null;
-      imageTitle.value = '';
-      imageDesc.value = '';
-      showUploadModal.value = false;
-      // 刷新列表
+      showToast('上传成功！', 'success')
+      showUploadModal.value = false
+      uploadModalRef.value?.reset()
       fetchImages()
     } else {
-      showToast(result.message || '上传失败', 'error');
+      showToast(result.message || '上传失败', 'error')
     }
   } catch (e) {
     console.error('上传失败:', e)
-    showToast('上传失败，请检查网络连接', 'error');
-  } finally {
-    uploading.value = false
+    showToast('上传失败，请检查网络连接', 'error')
   }
-};
+}
 
-const showToast = (message, type = 'success') => {
-  toast.value = { show: true, message, type };
+const showToast = (message: string, type: string = 'success') => {
+  toast.value = { show: true, message, type }
   setTimeout(() => {
-    toast.value.show = false;
-  }, 3000);
-};
-
-const formatDate = (dateStr) => {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(dateStr).toLocaleDateString('zh-CN', options);
-};
+    toast.value.show = false
+  }, 3000)
+}
 
 const resetView = () => {
-  searchQuery.value = '';
-  sortBy.value = 'newest';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+  searchQuery.value = ''
+  sortBy.value = 'newest'
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 
 onMounted(() => {
   fetchImages()
-});
+})
 </script>
 
 <style scoped>
-.file-picker {
-  position: relative;
-  width: 100%;
-  height: 12rem;
-  background-color: #f9fafb;
-  border: 2px dashed #d1d5db;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  margin-bottom: 1rem;
-}
-
-.file-input {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.picker-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #9ca3af;
-  font-size: 1rem;
-  text-align: center;
-}
-
-.preview-area {
-  margin-top: 1rem;
-  padding: 1rem;
-  background-color: #f9fafb;
-  border-radius: 0.5rem;
-  border: 1px solid #d1d5db;
-}
-
-.preview-img {
-  max-width: 100%;
-  max-height: 200px;
-  object-fit: contain;
-  border-radius: 0.375rem;
-  display: block;
-  margin: 0 auto 0.5rem;
-}
-
 /* 基础变量 */
 .gallery-app {
   --primary-color: #667eea;
@@ -531,7 +369,6 @@ onMounted(() => {
   max-width: 80rem;
   margin: 0 auto;
   padding: 2rem 1rem;
-  /* 确保主区域透明，透出背景图 */
   background-color: transparent;
   min-height: calc(100vh - 4rem);
 }
@@ -540,7 +377,6 @@ onMounted(() => {
 .control-bar {
   display: flex;
   flex-direction: column;
-  md: flex-row;
   gap: 1rem;
   margin-bottom: 2rem;
   background-color: var(--card-bg);
@@ -710,147 +546,6 @@ onMounted(() => {
   gap: 1rem;
 }
 
-/* 图片卡片 */
-.image-card {
-  background-color: var(--card-bg);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-color);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(5px);
-}
-
-.image-card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-
-.image-wrapper {
-  position: relative;
-  overflow: hidden;
-}
-
-.image-container.grid .image-wrapper {
-  aspect-ratio: 4 / 3;
-}
-
-.image-container.list .image-wrapper {
-  height: 12rem;
-}
-
-.card-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.7s ease;
-}
-
-.image-card:hover .card-image {
-  transform: scale(1.1);
-}
-
-.image-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  display: flex;
-  align-items: flex-end;
-  padding: 1rem;
-}
-
-.image-card:hover .image-overlay {
-  opacity: 1;
-}
-
-.overlay-content {
-  color: white;
-  transform: translateY(1rem);
-  transition: transform 0.3s ease;
-}
-
-.image-card:hover .overlay-content {
-  transform: translateY(0);
-}
-
-.overlay-title {
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 200px;
-}
-
-.overlay-author {
-  font-size: 0.75rem;
-  color: #e5e7eb;
-  margin-top: 0.25rem;
-}
-
-.like-badge {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  background-color: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(4px);
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.375rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #374151;
-  box-shadow: var(--shadow-sm);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.like-badge i {
-  color: #ef4444;
-  margin-right: 0.25rem;
-}
-
-.image-card:hover .like-badge {
-  opacity: 1;
-}
-
-.card-info {
-  padding: 1rem;
-}
-
-.info-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 0.5rem;
-}
-
-.info-title {
-  font-weight: 600;
-  color: var(--text-color);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 200px;
-}
-
-.info-date {
-  font-size: 0.75rem;
-  color: #9ca3af;
-  white-space: nowrap;
-  margin-left: 0.5rem;
-}
-
-.info-desc {
-  font-size: 0.875rem;
-  color: #6b7280;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 /* 空状态 */
 .empty-state {
   display: flex;
@@ -910,257 +605,6 @@ onMounted(() => {
   text-decoration: underline;
 }
 
-/* 模态框通用样式 */
-.modal-overlay,
-.preview-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
-
-.modal-backdrop {
-  position: absolute;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-}
-
-.modal-container {
-  background-color: var(--card-bg);
-  border-radius: 1rem;
-  box-shadow: var(--shadow-lg);
-  width: 100%;
-  max-width: 32rem;
-  max-height: 90vh;
-  position: relative;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.modal-header {
-  padding: 1.5rem;
-  border-bottom: 1px solid var(--border-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.modal-header h3 {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--text-color);
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  color: #9ca3af;
-  cursor: pointer;
-  font-size: 1.25rem;
-  transition: color 0.2s;
-}
-
-.close-btn:hover {
-  color: #4b5563;
-}
-
-.modal-body {
-  padding: 1.5rem;
-}
-
-.upload-zone {
-  border: 2px dashed #d1d5db;
-  border-radius: 0.75rem;
-  padding: 2rem;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  margin-bottom: 1.5rem;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.upload-zone:hover {
-  border-color: var(--primary-color);
-  background-color: rgba(79, 70, 229, 0.05);
-}
-
-.upload-icon {
-  font-size: 2.5rem;
-  color: #9ca3af;
-  margin-bottom: 0.75rem;
-  transition: color 0.2s;
-}
-
-.upload-zone:hover .upload-icon {
-  color: var(--primary-color);
-}
-
-.upload-text {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #4b5563;
-  margin-bottom: 0.25rem;
-}
-
-.upload-hint {
-  font-size: 0.75rem;
-  color: #9ca3af;
-}
-
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.form-group label {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #374151;
-  margin-bottom: 0.25rem;
-}
-
-.dark-mode .form-group label {
-  color: #d1d5db;
-}
-
-.form-input,
-.form-textarea {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  background-color: white;
-  color: #1f2937;
-  outline: none;
-  transition: all 0.2s;
-}
-
-.form-input:focus,
-.form-textarea:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
-}
-
-.dark-mode .form-input,
-.dark-mode .form-textarea {
-  background-color: #374151;
-  border-color: #4b5563;
-  color: white;
-}
-
-.modal-footer {
-  padding: 1rem 1.5rem;
-  background-color: #f9fafb;
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-}
-
-.dark-mode .modal-footer {
-  background-color: #1f2937;
-}
-
-.secondary-btn {
-  padding: 0.5rem 1rem;
-  color: #374151;
-  background: none;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.secondary-btn:hover {
-  background-color: #e5e7eb;
-}
-
-.dark-mode .secondary-btn {
-  color: #d1d5db;
-}
-
-.dark-mode .secondary-btn:hover {
-  background-color: #374151;
-}
-
-/* 预览模态框特定样式 */
-.preview-overlay {
-  background-color: rgba(0, 0, 0, 0.95);
-  backdrop-filter: blur(8px);
-}
-
-.preview-close {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  color: rgba(255, 255, 255, 0.7);
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  transition: color 0.2s;
-  z-index: 20;
-}
-
-.preview-close:hover {
-  color: white;
-}
-
-.preview-content {
-  max-width: 64rem;
-  width: 100%;
-  max-height: 100vh;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.preview-image {
-  max-height: 80vh;
-  max-width: 100%;
-  object-fit: contain;
-  border-radius: 0.5rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-}
-
-.preview-info {
-  margin-top: 1.5rem;
-  text-align: center;
-  color: white;
-}
-
-.preview-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-
-.preview-desc {
-  color: #d1d5db;
-  max-width: 48rem;
-  margin: 0 auto 1rem;
-}
-
-.preview-meta {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  font-size: 0.875rem;
-  color: #9ca3af;
-}
-
-.meta-likes {
-  color: #f87171;
-}
-
 /* Toast 提示 */
 .toast {
   position: fixed;
@@ -1218,15 +662,11 @@ onMounted(() => {
   opacity: 0;
 }
 
-
 @keyframes bounce {
-
-  0%,
-  100% {
+  0%, 100% {
     transform: translateY(-25%);
     animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
   }
-
   50% {
     transform: translateY(0);
     animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
