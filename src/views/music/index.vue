@@ -1,6 +1,6 @@
 <template>
     <div
-        class="flex h-screen text-gray-200 font-sans overflow-hidden selection:bg-purple-500 selection:text-white"
+        class="flex h-screen text-gray-200 font-sans overflow-hidden selection:bg-purple-500 selection:text-white pt-16"
         style="background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);">
         <img src="https://gips2.baidu.com/it/u=641660390,3943119249&fm=3074&app=3074&f=PNG?w=2560&h=1440"
             alt="Background" class="ken-burns-img">
