@@ -1,4 +1,4 @@
-import { get1, post1, put1, del1 } from './index1'
+import { get1, post1, put1, del1 } from './index'
 
 export const registerUser = async (userData: { name: string; password: string; email: string; role: string }) => {
     const result = await post1('/api/auth/register', userData)

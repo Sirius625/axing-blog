@@ -1,11 +1,9 @@
 <template>
-  <div class="flex flex-col md:flex-row min-h-screen md:h-screen text-gray-200 font-sans md:overflow-hidden selection:bg-purple-500 selection:text-white pt-16"
+  <div class="flex flex-col md:flex-row min-h-screen text-gray-200 font-sans overflow-x-hidden selection:bg-purple-500 selection:text-white"
     style="background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);">
-    <img src="https://gips2.baidu.com/it/u=641660390,3943119249&fm=3074&app=3074&f=PNG?w=2560&h=1440"
-      alt="Background" class="ken-burns-img" loading="lazy">
 
     <!-- 移动端底部导航 Tab -->
-    <div class="fixed bottom-20 left-0 right-0 z-40 flex md:hidden bg-[#1a1a2e]/95 backdrop-blur-xl border-t border-white/10">
+    <div class="fixed bottom-20 left-0 right-0 z-40 flex md:hidden bg-[#1a1a2e]/95 backdrop-blur-xl border-t border-white/10" style="touch-action: none;">
       <button v-for="tab in mobileTabs" :key="tab.id" @click="switchTab(tab.id)"
         :class="activeTab === tab.id ? 'text-purple-400 bg-purple-500/10' : 'text-white/50'"
         class="flex-1 flex flex-col items-center py-2 text-xs transition-colors">
@@ -22,7 +20,7 @@
     />
 
     <!-- 主内容区 -->
-    <main class="flex-1 flex flex-col relative md:overflow-hidden bg-transparent">
+    <main class="flex-1 flex flex-col relative overflow-hidden bg-transparent music-main">
       <!-- 顶部搜索栏 -->
       <MusicSearch
         v-model="searchQuery"
@@ -33,8 +31,7 @@
       />
 
       <!-- 内容滚动区域 -->
-      <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 pb-32" ref="scrollContainer"
-        style="margin-bottom: 60px;">
+      <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 pb-48 md:pb-36" ref="scrollContainer">
 
         <!-- 加载状态 -->
         <div v-if="loading" class="flex flex-col items-center justify-center h-64 text-white/50">
@@ -87,7 +84,7 @@
               v-for="playlist in playlists"
               :key="playlist.id"
               :playlist="playlist"
-              @select="getPlaylistDetail"
+              @select="(p: any) => getPlaylistDetail(p.id)"
             />
           </div>
         </div>
@@ -180,7 +177,7 @@
               class="flex items-center gap-4 p-4 hover:bg-white/5 cursor-pointer border-b border-white/5 last:border-0 transition-colors group">
               <div class="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
                 <img :src="song.al?.picUrl || 'https://picsum.photos/100?random=' + song.id"
-                  :alt="song.name" class="w-full h-full object-cover">
+                  :alt="song.name" class="w-full object-cover">
                 <div class="absolute inset-0 bg-black/20 hidden group-hover:flex items-center justify-center">
                   <i class="fas fa-play text-white text-xs"></i>
                 </div>
@@ -203,25 +200,6 @@
         </div>
       </div>
 
-      <!-- 底部播放控制栏 -->
-      <MusicPlayer
-        :currentSong="currentSong"
-        :isPlaying="isPlaying"
-        :isLiked="currentSong ? isLiked(currentSong.id) : false"
-        :isMuted="volume === 0"
-        :currentTime="currentTime"
-        :duration="duration"
-        :volume="volume"
-        @togglePlay="togglePlay"
-        @prev="prevSong"
-        @next="nextSong"
-        @toggleLike="toggleLike"
-        @toggleLyrics="toggleLyricModal"
-        @toggleMute="toggleMute"
-        @seek="seekTo"
-        @setVolume="setVolume"
-      />
-
       <!-- 歌词模态框 -->
       <LyricModal
         :visible="showLyricModal"
@@ -231,6 +209,25 @@
         @close="showLyricModal = false"
       />
     </main>
+
+    <!-- 底部播放控制栏 -->
+    <MusicPlayer
+      :currentSong="currentSong"
+      :isPlaying="isPlaying"
+      :isLiked="currentSong ? isLiked(currentSong.id) : false"
+      :isMuted="volume === 0"
+      :currentTime="currentTime"
+      :duration="duration"
+      :volume="volume"
+      @togglePlay="togglePlay"
+      @prev="prevSong"
+      @next="nextSong"
+      @toggleLike="toggleLike"
+      @toggleLyrics="toggleLyricModal"
+      @toggleMute="toggleMute"
+      @seek="seekTo"
+      @setVolume="setVolume"
+    />
   </div>
 </template>
 
@@ -274,6 +271,7 @@ const mobileTabs = [
   { id: 'toplist' as const, label: '排行榜', icon: 'fas fa-trophy' },
   { id: 'likes' as const, label: '喜欢', icon: 'fas fa-heart' },
   { id: 'history' as const, label: '历史', icon: 'fas fa-history' },
+  { id: 'search' as const, label: '搜索', icon: 'fas fa-search' },
 ]
 
 const playlists = ref<Playlist[]>([])
@@ -427,12 +425,12 @@ const playSong = async (song: Song) => {
       fetchLyrics(song.id)
       playSongCount(song)
     } else {
-      console.warn('No URL found, skipping to next')
-      nextSong()
+      console.warn('No URL found for song:', song.name)
+      // 不自动跳转下一首，让用户手动选择
     }
   } catch (e) {
     console.error('Play error', e)
-    nextSong()
+    // 不自动跳转下一首，让用户手动选择
   }
 }
 
@@ -531,8 +529,8 @@ const toggleLyricModal = () => {
 }
 
 // --- 搜索逻辑 ---
-const handleSearch = async () => {
-  const keyword = searchQuery.value.trim()
+const handleSearch = async (keyword?: string) => {
+  keyword = (keyword || searchQuery.value).trim()
   if (!keyword) return
   saveSearchHistory(keyword)
   activeTab.value = 'search'
@@ -699,22 +697,13 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.ken-burns-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  will-change: transform;
-  transform: translateZ(0);
-  animation: kenBurns 30s ease-in-out infinite alternate;
-  pointer-events: none;
-}
-
-@keyframes kenBurns {
-  0% { transform: scale(1) translate(0, 0) translateZ(0); }
-  100% { transform: scale(1.08) translate(-1%, -1%) translateZ(0); }
+/* 桌面端主内容区两边留空 */
+@media (min-width: 768px) {
+  .music-main {
+    max-width: 100%;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 }
 
 .custom-scrollbar::-webkit-scrollbar {

@@ -13,9 +13,14 @@
           placeholder="搜索音乐、歌手、歌词..."
           class="w-full pl-12 pr-10 py-2.5 bg-white/10 border border-white/10 rounded-full text-sm focus:bg-white/15 focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 outline-none transition-all duration-300 placeholder-white/30 text-white"
         />
-        <button v-if="query" @click="clearQuery" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70">
-          <i class="fas fa-times-circle"></i>
-        </button>
+        <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+          <button v-if="query" @click="clearQuery" class="w-7 h-7 flex items-center justify-center text-white/40 hover:text-white/70 transition-colors">
+            <i class="fas fa-times-circle"></i>
+          </button>
+          <button @click="$emit('search', query)" class="w-7 h-7 flex items-center justify-center text-white/40 hover:text-purple-400 transition-colors" title="搜索">
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
       </div>
 
       <!-- 搜索历史下拉框 -->

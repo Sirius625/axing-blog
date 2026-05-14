@@ -7,7 +7,7 @@
         </button>
         <div class="lyric-content">
           <div class="lyric-header">
-            <img :src="song?.al?.picUrl" class="lyric-cover" />
+            <img :src="song?.al?.picUrl || 'https://picsum.photos/200?random=' + song?.id" class="lyric-cover" />
             <div>
               <h2 class="lyric-title">{{ song?.name }}</h2>
               <p class="lyric-artist">{{ song?.ar?.[0]?.name || '未知' }}</p>
@@ -49,7 +49,7 @@ const lyricScrollRef = ref<HTMLElement | null>(null)
 
 const currentLineIndex = ref(0)
 
-watch(() => props.currentTime, (time) => {
+const updateCurrentLine = (time: number) => {
   if (!props.lyrics.length) return
   let index = props.lyrics.findIndex((line, i) => {
     const nextLine = props.lyrics[i + 1]
@@ -64,6 +64,16 @@ watch(() => props.currentTime, (time) => {
       activeEl?.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
   })
+}
+
+watch(() => props.currentTime, (time) => {
+  updateCurrentLine(time)
+})
+
+watch(() => props.lyrics, () => {
+  if (props.currentTime > 0) {
+    updateCurrentLine(props.currentTime)
+  }
 })
 </script>
 

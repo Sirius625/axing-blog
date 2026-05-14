@@ -70,6 +70,8 @@ const categories: Category[] = [
   { id: 'javascript', name: 'JavaScript', icon: 'fab fa-js' },
   { id: 'vue', name: 'Vue', icon: 'fab fa-vuejs' },
   { id: 'react', name: 'React', icon: 'fab fa-react' },
+  { id: 'nodejs', name: 'Node.js', icon: 'fab fa-node-js' },
+  { id: 'database', name: '数据库', icon: 'fas fa-database' },
   { id: 'engineering', name: '工程化', icon: 'fas fa-tools' },
 ]
 
@@ -316,6 +318,130 @@ const knowledgeItems: KnowledgeItem[] = [
     points: ['HTTP/HTTPS 协议', 'CORS 跨域', 'XSS 与 CSRF 防护', '认证与授权'],
     resources: [
       { name: 'MDN HTTP 参考', url: 'https://developer.mozilla.org/zh-CN/docs/Web/HTTP', icon: 'fas fa-book' }
+    ]
+  },
+
+  // Node.js
+  {
+    id: 29, title: 'Node.js 核心概念', description: 'Node.js 运行时环境、事件驱动与非阻塞 I/O 模型。',
+    category: 'Node.js', icon: 'fab fa-node-js', color: 'linear-gradient(135deg, #339933, #6cc24a)', tags: ['Node.js', '运行时', '事件循环'],
+    points: ['Node.js 架构与事件循环', '非阻塞 I/O 与异步编程', 'CommonJS 与 ES Module 模块系统', 'Buffer 与 Stream 流处理', 'Cluster 集群与进程管理'],
+    resources: [
+      { name: 'Node.js 官方文档', url: 'https://nodejs.org/docs/latest/api/', icon: 'fas fa-book' },
+      { name: 'Node.js 中文教程', url: 'https://nodejs.cn/', icon: 'fas fa-language' }
+    ]
+  },
+  {
+    id: 30, title: 'Express.js 框架', description: 'Node.js 最流行的 Web 框架，快速构建 RESTful API。',
+    category: 'Node.js', icon: 'fab fa-node-js', color: 'linear-gradient(135deg, #339933, #6cc24a)', tags: ['Express', 'Web框架', 'API'],
+    points: ['路由与中间件机制', '请求处理与响应', '错误处理中间件', '静态文件服务', '模板引擎集成'],
+    resources: [
+      { name: 'Express 官方文档', url: 'https://expressjs.com/', icon: 'fas fa-book' },
+      { name: 'Express 中文文档', url: 'https://expressjs.com/zh-cn/', icon: 'fas fa-language' }
+    ]
+  },
+  {
+    id: 31, title: 'Koa.js 框架', description: '下一代 Node.js Web 框架，使用 async/await 处理异步。',
+    category: 'Node.js', icon: 'fab fa-node-js', color: 'linear-gradient(135deg, #339933, #6cc24a)', tags: ['Koa', 'Web框架', 'async/await'],
+    points: ['Koa 洋葱模型中间件', '上下文 Context 封装', 'async/await 异步流程', '与 Express 对比'],
+    resources: [
+      { name: 'Koa 官方文档', url: 'https://koajs.com/', icon: 'fas fa-book' }
+    ]
+  },
+  {
+    id: 32, title: 'NestJS 框架', description: '使用 TypeScript 构建高效、可扩展的企业级 Node.js 应用。',
+    category: 'Node.js', icon: 'fab fa-node-js', color: 'linear-gradient(135deg, #339933, #6cc24a)', tags: ['NestJS', 'TypeScript', '企业级'],
+    points: ['模块化架构设计', '依赖注入与控制反转', '守卫、拦截器与管道', 'WebSocket 与微服务', 'TypeORM 数据库集成'],
+    resources: [
+      { name: 'NestJS 官方文档', url: 'https://docs.nestjs.com/', icon: 'fas fa-book' },
+      { name: 'NestJS 中文文档', url: 'https://docs.nestjs.cn/', icon: 'fas fa-language' }
+    ]
+  },
+  {
+    id: 33, title: 'npm 与包管理', description: 'Node.js 包管理工具 npm/yarn/pnpm 的使用与最佳实践。',
+    category: 'Node.js', icon: 'fab fa-node-js', color: 'linear-gradient(135deg, #339933, #6cc24a)', tags: ['npm', 'yarn', 'pnpm', '包管理'],
+    points: ['package.json 配置详解', '语义化版本控制', '依赖管理与锁文件', 'npm scripts 脚本', '发布与维护 npm 包'],
+    resources: [
+      { name: 'npm 官方文档', url: 'https://docs.npmjs.com/', icon: 'fas fa-book' },
+      { name: 'pnpm 官方文档', url: 'https://pnpm.io/', icon: 'fas fa-book' }
+    ]
+  },
+  {
+    id: 34, title: 'Node.js 安全实践', description: 'Node.js 应用安全防护与常见漏洞防范。',
+    category: 'Node.js', icon: 'fab fa-node-js', color: 'linear-gradient(135deg, #339933, #6cc24a)', tags: ['安全', '认证', '防护'],
+    points: ['Helmet 安全头设置', 'CORS 跨域配置', 'JWT 与 Session 认证', 'SQL 注入与 NoSQL 注入防护', '速率限制与防暴力破解'],
+    resources: [
+      { name: 'Node.js 安全清单', url: 'https://cheatsheetseries.owasp.org/cheatsheets/Nodejs_Security_Cheat_Sheet.html', icon: 'fas fa-shield-alt' }
+    ]
+  },
+  {
+    id: 35, title: 'WebSocket 与实时通信', description: '使用 WebSocket 实现 Node.js 实时双向通信。',
+    category: 'Node.js', icon: 'fab fa-node-js', color: 'linear-gradient(135deg, #339933, #6cc24a)', tags: ['WebSocket', 'Socket.IO', '实时'],
+    points: ['WebSocket 协议原理', 'Socket.IO 使用与事件', '房间与命名空间', '断线重连机制', '广播与私信'],
+    resources: [
+      { name: 'Socket.IO 官方文档', url: 'https://socket.io/docs/', icon: 'fas fa-book' }
+    ]
+  },
+
+  // 数据库
+  {
+    id: 36, title: 'MySQL 基础', description: 'MySQL 关系型数据库的核心概念与基本操作。',
+    category: '数据库', icon: 'fas fa-database', color: 'linear-gradient(135deg, #00758f, #f29111)', tags: ['MySQL', '关系型', 'SQL'],
+    points: ['数据库表设计与范式', 'CRUD 增删改查操作', 'WHERE 条件与排序', '聚合函数与分组', 'JOIN 多表连接查询'],
+    resources: [
+      { name: 'MySQL 官方文档', url: 'https://dev.mysql.com/doc/', icon: 'fas fa-book' },
+      { name: 'MySQL 教程', url: 'https://www.runoob.com/mysql/mysql-tutorial.html', icon: 'fas fa-graduation-cap' }
+    ]
+  },
+  {
+    id: 37, title: 'MySQL 索引与优化', description: 'MySQL 索引原理与查询性能优化策略。',
+    category: '数据库', icon: 'fas fa-database', color: 'linear-gradient(135deg, #00758f, #f29111)', tags: ['索引', '性能优化', '慢查询'],
+    points: ['B+ 树索引原理', '聚簇索引与二级索引', 'EXPLAIN 执行计划分析', '慢查询日志与优化', '索引失效场景分析'],
+    resources: [
+      { name: 'MySQL 索引优化', url: 'https://dev.mysql.com/doc/refman/8.0/en/optimization-indexes.html', icon: 'fas fa-book' }
+    ]
+  },
+  {
+    id: 38, title: 'MySQL 事务与锁', description: '数据库事务 ACID 特性与锁机制。',
+    category: '数据库', icon: 'fas fa-database', color: 'linear-gradient(135deg, #00758f, #f29111)', tags: ['事务', '锁', 'ACID'],
+    points: ['事务 ACID 特性', '隔离级别与并发问题', 'MVCC 多版本并发控制', '行锁、表锁与间隙锁', '死锁检测与处理'],
+    resources: [
+      { name: 'MySQL 事务处理', url: 'https://dev.mysql.com/doc/refman/8.0/en/innodb-transaction-model.html', icon: 'fas fa-book' }
+    ]
+  },
+  {
+    id: 39, title: 'MySQL 高级查询', description: 'MySQL 复杂查询与数据分析功能。',
+    category: '数据库', icon: 'fas fa-database', color: 'linear-gradient(135deg, #00758f, #f29111)', tags: ['高级查询', '子查询', '窗口函数'],
+    points: ['子查询与派生表', '窗口函数 ROW_NUMBER/RANK', 'CTE 公用表表达式', 'JSON 数据类型与函数', '分区表设计'],
+    resources: [
+      { name: 'MySQL 窗口函数', url: 'https://dev.mysql.com/doc/refman/8.0/en/window-functions.html', icon: 'fas fa-book' }
+    ]
+  },
+  {
+    id: 40, title: 'Redis 缓存', description: 'Redis 内存数据库在 Node.js 中的缓存应用。',
+    category: '数据库', icon: 'fas fa-database', color: 'linear-gradient(135deg, #dc382d, #a71e1e)', tags: ['Redis', '缓存', 'NoSQL'],
+    points: ['Redis 数据结构与命令', '缓存策略与过期时间', 'Session 存储', '发布订阅模式', 'Node.js 集成 ioredis'],
+    resources: [
+      { name: 'Redis 官方文档', url: 'https://redis.io/docs/', icon: 'fas fa-book' },
+      { name: 'ioredis 文档', url: 'https://github.com/redis/ioredis', icon: 'fab fa-github' }
+    ]
+  },
+  {
+    id: 41, title: 'MongoDB 基础', description: 'MongoDB NoSQL 文档数据库的核心概念与操作。',
+    category: '数据库', icon: 'fas fa-database', color: 'linear-gradient(135deg, #47a248, #3b8c3e)', tags: ['MongoDB', 'NoSQL', '文档数据库'],
+    points: ['文档与集合概念', 'CRUD 操作', '聚合管道', '索引与性能', 'Mongoose ODM 使用'],
+    resources: [
+      { name: 'MongoDB 官方文档', url: 'https://www.mongodb.com/docs/', icon: 'fas fa-book' },
+      { name: 'Mongoose 文档', url: 'https://mongoosejs.com/docs/', icon: 'fas fa-book' }
+    ]
+  },
+  {
+    id: 42, title: 'ORM 与数据库设计', description: 'Node.js 中 ORM 框架的使用与数据库设计原则。',
+    category: '数据库', icon: 'fas fa-database', color: 'linear-gradient(135deg, #00758f, #f29111)', tags: ['ORM', 'Sequelize', 'TypeORM', 'Prisma'],
+    points: ['ORM 概念与优势', 'Sequelize/TypeORM 使用', 'Prisma 下一代 ORM', '数据库迁移与种子', 'ER 图与表关系设计'],
+    resources: [
+      { name: 'Prisma 官方文档', url: 'https://www.prisma.io/docs/', icon: 'fas fa-book' },
+      { name: 'Sequelize 文档', url: 'https://sequelize.org/', icon: 'fas fa-book' }
     ]
   },
 ]

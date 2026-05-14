@@ -22,5 +22,14 @@ const handleLoginSuccess = () => {
 </script>
 
 <style>
+.workspace {
+  padding-top: 64px;
+  min-height: 100vh;
+}
 
+@media (max-width: 768px) {
+  .workspace {
+    padding-top: 56px;
+  }
+}
 </style>

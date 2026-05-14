@@ -116,7 +116,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { post1 } from '@/api/index1'
+import { get1, post1 } from '@/api/index'
 import ImageCard from '@/components/home/ImageCard.vue'
 import ImageUploadModal from '@/components/home/ImageUploadModal.vue'
 import ImagePreviewModal from '@/components/home/ImagePreviewModal.vue'
@@ -138,9 +138,10 @@ const toast = ref({ show: false, message: '', type: 'success' })
 const fetchImages = async () => {
   loading.value = true
   try {
-    const res = await post1('/api/images/list', { page: 1, pageSize: 100 })
+    const res = await get1('/api/images?page=1&pageSize=100')
     if (res.success && res.data) {
-      images.value = res.data.map((img: any) => ({
+      const list = Array.isArray(res.data) ? res.data : (res.data.data || [])
+      images.value = list.map((img: any) => ({
         id: img.id,
         url: 'http://localhost:3030' + img.url,
         title: img.title,
@@ -273,11 +274,11 @@ onMounted(() => {
   z-index: 40;
   border-bottom: 1px solid var(--border-color);
   backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(15, 23, 42, 0.85);
 }
 
 .dark-mode .app-header {
-  background-color: rgba(31, 41, 55, 0.8);
+  background-color: rgba(15, 23, 42, 0.85);
 }
 
 .header-content {
@@ -346,21 +347,21 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.25rem;
   border-radius: 0.5rem;
-  border: none;
-  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.35);
 }
 
 .primary-btn:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
 }
 
 /* 主内容区 */

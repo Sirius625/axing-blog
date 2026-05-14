@@ -1,5 +1,5 @@
 <template>
-  <aside class="sidebar">
+<aside class="sidebar hidden md:flex">
     <div class="p-6 flex items-center gap-3 cursor-pointer" @click="$emit('switchTab', 'recommend')">
       <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-purple-500/30">
         <i class="fas fa-music"></i>
@@ -68,10 +68,13 @@ defineEmits<{
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px);
   border-right: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
   flex-direction: column;
-  z-index: 20;
+  z-index: 1;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  flex-shrink: 0;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
