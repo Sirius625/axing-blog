@@ -132,6 +132,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { get1, post1 } from '@/api/index'
+
+// 图片服务器基础地址
+const IMAGE_BASE_URL = import.meta.env.VITE_MANAGE_API_BASE_URL || 'http://localhost:3030'
 import ImageCard from '@/components/home/ImageCard.vue'
 import ImageUploadModal from '@/components/home/ImageUploadModal.vue'
 import ImagePreviewModal from '@/components/home/ImagePreviewModal.vue'
@@ -169,7 +172,7 @@ const fetchImages = async () => {
       console.log('fetchImages list:', list)
       images.value = list.map((img: any) => ({
         id: img.id,
-        url: 'http://localhost:3030' + img.url,
+        url: IMAGE_BASE_URL + img.url,
         title: img.title,
         description: img.description || '',
         category: img.category || '其他',
@@ -251,7 +254,7 @@ const handleCategoryChange = async () => {
       const list = Array.isArray(res.data) ? res.data : (res.data.data || [])
       images.value = list.map((img: any) => ({
         id: img.id,
-        url: 'http://localhost:3030' + img.url,
+        url: IMAGE_BASE_URL + img.url,
         title: img.title,
         description: img.description || '',
         category: img.category || '其他',
@@ -284,7 +287,7 @@ const handleVisibilityChange = async () => {
       const list = Array.isArray(res.data) ? res.data : (res.data.data || [])
       images.value = list.map((img: any) => ({
         id: img.id,
-        url: 'http://localhost:3030' + img.url,
+        url: IMAGE_BASE_URL + img.url,
         title: img.title,
         description: img.description || '',
         category: img.category || '其他',
