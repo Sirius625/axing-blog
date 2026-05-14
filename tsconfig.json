@@ -12,10 +12,11 @@
     "lib": ["ES2020", "DOM"],
     "types": ["vite/client"],
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
+    "skipLibCheck": true,
     "paths": {
       "@/*": ["src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }
