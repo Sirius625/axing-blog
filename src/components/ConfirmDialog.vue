@@ -5,6 +5,7 @@
     width="400px"
     :before-close="handleCancel"
     @update:model-value="updateVisible"
+    append-to-body
   >
     <p>{{ message }}</p>
     <template #footer>

@@ -634,20 +634,24 @@ const playAllLiked = () => {
 }
 
 const getLikedSongs = async () => {
+  // 未登录或 token 不存在时跳过，避免 401 报错
+  if (!localStorage.getItem('token')) return
   try {
     const response = await getSongs(1, 100)
     likedSongs.value = response.data || []
   } catch (e) {
-    console.error('Failed to fetch liked songs', e)
+    console.warn('Failed to fetch liked songs (may be unauthenticated)', e)
   }
 }
 
 const getHistorySongs = async () => {
+  // 未登录或 token 不存在时跳过，避免 401 报错
+  if (!localStorage.getItem('token')) return
   try {
     const response = await getHistory(1, 50)
     historySongs.value = response.data || []
   } catch (e) {
-    console.error('Failed to fetch history songs', e)
+    console.warn('Failed to fetch history songs (may be unauthenticated)', e)
   }
 }
 

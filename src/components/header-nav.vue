@@ -125,6 +125,7 @@ onUnmounted(() => {
     left: 0;
     right: 0;
     z-index: 10;
+    max-width: 100%;
     background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -418,18 +419,28 @@ onUnmounted(() => {
 
 /* ========== 响应式 ========== */
 @media (max-width: 768px) {
+    .navbar {
+        width: 100%;
+        overflow: hidden;
+    }
+
     .navbar-inner {
-        padding: 0 16px;
+        padding: 0 12px;
         height: 56px;
+        max-width: 100%;
     }
 
     .nav-links {
         gap: 2px;
+        flex-shrink: 1;
+        min-width: 0;
+        overflow: hidden;
     }
 
     .nav-link {
-        padding: 6px 12px;
+        padding: 6px 10px;
         font-size: 13px;
+        white-space: nowrap;
     }
 
     .nav-link span {
@@ -440,11 +451,36 @@ onUnmounted(() => {
         font-size: 16px;
     }
 
+    .logo-area {
+        flex-shrink: 0;
+    }
+
     .logo-text {
-        font-size: 18px;
+        font-size: 16px;
+    }
+
+    .logo-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+
+    .user-btn {
+        padding: 4px 10px 4px 4px;
+        gap: 4px;
+    }
+
+    .user-avatar {
+        width: 26px;
+        height: 26px;
+        font-size: 12px;
     }
 
     .user-name {
+        display: none;
+    }
+
+    .user-arrow {
         display: none;
     }
 }

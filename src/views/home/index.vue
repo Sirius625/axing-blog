@@ -32,10 +32,25 @@
             type="text"
             placeholder="搜索图片标题或描述..."
             class="search-input"
+            @input="handleSearchInput"
           />
         </div>
         <div class="filter-controls">
+          <!-- 分类筛选 -->
+          <select v-model="selectedCategory" class="select-input" @change="handleCategoryChange">
+            <option value="">全部分类</option>
+            <option value="运动">🏃 运动</option>
+            <option value="日常">☕ 日常</option>
+            <option value="游戏">🎮 游戏</option>
+            <option value="其他">📦 其他</option>
+          </select>
+          <select v-model="selectedVisibility" class="select-input" @change="handleVisibilityChange">
+            <option value="">全部可见性</option>
+            <option value="1">🌍 公开</option>
+            <option value="0">🔒 私密</option>
+          </select>
           <select v-model="sortBy" class="select-input">
+
             <option value="newest">最新上传</option>
             <option value="popular">最多点赞</option>
             <option value="name">按名称</option>
@@ -125,7 +140,10 @@ import ImagePreviewModal from '@/components/home/ImagePreviewModal.vue'
 const images = ref<any[]>([])
 const loading = ref(false)
 const searchQuery = ref('')
+const selectedCategory = ref('')
+const selectedVisibility = ref('')
 const sortBy = ref('newest')
+
 const viewMode = ref('grid')
 const isDark = ref(false)
 const showUploadModal = ref(false)
@@ -138,18 +156,31 @@ const toast = ref({ show: false, message: '', type: 'success' })
 const fetchImages = async () => {
   loading.value = true
   try {
-    const res = await get1('/api/images?page=1&pageSize=100')
+    let url = '/api/images?page=1&pageSize=100&_t=' + Date.now()
+    // 根据可见性筛选参数传递
+    if (selectedVisibility.value !== '') {
+      url += '&isPublic=' + selectedVisibility.value
+    }
+    const res = await get1(url)
+    console.log('fetchImages response:', res)
+
     if (res.success && res.data) {
       const list = Array.isArray(res.data) ? res.data : (res.data.data || [])
+      console.log('fetchImages list:', list)
       images.value = list.map((img: any) => ({
         id: img.id,
         url: 'http://localhost:3030' + img.url,
         title: img.title,
         description: img.description || '',
+        category: img.category || '其他',
         author: img.author || '匿名',
         likes: img.likes || 0,
+        isPublic: img.is_public,
         date: img.created_at ? img.created_at.split(' ')[0] : '未知'
       }))
+      console.log('images.value after map:', images.value)
+    } else {
+      console.warn('fetchImages: no data returned', res)
     }
   } catch (e) {
     console.error('获取图片列表失败:', e)
@@ -160,12 +191,30 @@ const fetchImages = async () => {
 
 // 计算属性
 const filteredImages = computed(() => {
-  let result = images.value.filter(img =>
-    img.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    img.description.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
+  let result = images.value
+
+  // 按分类筛选
+  if (selectedCategory.value) {
+    result = result.filter(img => img.category === selectedCategory.value)
+  }
+
+  // 按可见性筛选
+  if (selectedVisibility.value !== '') {
+    const isPublicVal = selectedVisibility.value === '1' ? 1 : 0
+    result = result.filter(img => img.isPublic === isPublicVal)
+  }
+
+  // 按关键词搜索
+  if (searchQuery.value) {
+    const q = searchQuery.value.toLowerCase()
+    result = result.filter(img =>
+      img.title.toLowerCase().includes(q) ||
+      img.description.toLowerCase().includes(q)
+    )
+  }
 
   if (sortBy.value === 'popular') {
+
     result.sort((a, b) => b.likes - a.likes)
   } else if (sortBy.value === 'name') {
     result.sort((a, b) => a.title.localeCompare(b.title))
@@ -174,6 +223,84 @@ const filteredImages = computed(() => {
   }
   return result
 })
+
+// 搜索输入防抖
+let searchTimer: ReturnType<typeof setTimeout> | null = null
+const handleSearchInput = () => {
+  if (searchTimer) clearTimeout(searchTimer)
+  searchTimer = setTimeout(() => {
+    // 搜索已通过计算属性实时过滤，这里只是触发更新
+  }, 300)
+}
+
+// 分类切换 - 从后端重新获取
+const handleCategoryChange = async () => {
+  loading.value = true
+  try {
+    let url = '/api/images?page=1&pageSize=100'
+    if (selectedCategory.value) {
+      url += '&category=' + encodeURIComponent(selectedCategory.value)
+    }
+    // 保持可见性筛选
+    if (selectedVisibility.value !== '') {
+      url += '&isPublic=' + selectedVisibility.value
+    }
+    const res = await get1(url)
+
+    if (res.success && res.data) {
+      const list = Array.isArray(res.data) ? res.data : (res.data.data || [])
+      images.value = list.map((img: any) => ({
+        id: img.id,
+        url: 'http://localhost:3030' + img.url,
+        title: img.title,
+        description: img.description || '',
+        category: img.category || '其他',
+        author: img.author || '匿名',
+        likes: img.likes || 0,
+        isPublic: img.is_public,
+        date: img.created_at ? img.created_at.split(' ')[0] : '未知'
+      }))
+    }
+  } catch (e) {
+    console.error('获取图片列表失败:', e)
+  } finally {
+    loading.value = false
+  }
+}
+
+// 可见性切换 - 从后端重新获取
+const handleVisibilityChange = async () => {
+  loading.value = true
+  try {
+    let url = '/api/images?page=1&pageSize=100'
+    if (selectedVisibility.value !== '') {
+      url += '&isPublic=' + selectedVisibility.value
+    }
+    if (selectedCategory.value) {
+      url += '&category=' + encodeURIComponent(selectedCategory.value)
+    }
+    const res = await get1(url)
+    if (res.success && res.data) {
+      const list = Array.isArray(res.data) ? res.data : (res.data.data || [])
+      images.value = list.map((img: any) => ({
+        id: img.id,
+        url: 'http://localhost:3030' + img.url,
+        title: img.title,
+        description: img.description || '',
+        category: img.category || '其他',
+        author: img.author || '匿名',
+        likes: img.likes || 0,
+        isPublic: img.is_public,
+        date: img.created_at ? img.created_at.split(' ')[0] : '未知'
+      }))
+    }
+  } catch (e) {
+    console.error('获取图片列表失败:', e)
+  } finally {
+    loading.value = false
+  }
+}
+
 
 // 方法
 const toggleTheme = () => {
@@ -190,7 +317,7 @@ const closePreview = () => {
   document.body.style.overflow = ''
 }
 
-const handleUpload = async (data: { title: string; description: string; file: File }) => {
+const handleUpload = async (data: { title: string; description: string; category: string; isPublic: boolean; file: File }) => {
   try {
     const reader = new FileReader()
     const base64 = await new Promise<string>((resolve) => {
@@ -201,8 +328,11 @@ const handleUpload = async (data: { title: string; description: string; file: Fi
     const result = await post1('/api/images/upload', {
       title: data.title,
       description: data.description,
+      category: data.category,
+      isPublic: data.isPublic,
       imageBase64: base64
     })
+
 
     if (result.success && result.data) {
       showToast('上传成功！', 'success')
@@ -291,6 +421,36 @@ onMounted(() => {
   justify-content: space-between;
 }
 
+@media (max-width: 768px) {
+  .header-content {
+    padding: 0 0.75rem;
+    height: 3.5rem;
+  }
+
+  .header-actions {
+    gap: 0.5rem;
+  }
+
+  .primary-btn span {
+    display: none;
+  }
+
+  .primary-btn {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .logo-area h1 {
+    font-size: 1rem;
+  }
+
+  .logo-icon {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+  }
+}
+
 .logo-area {
   display: flex;
   align-items: center;
@@ -374,6 +534,12 @@ onMounted(() => {
   min-height: calc(100vh - 4rem);
 }
 
+@media (max-width: 768px) {
+  .app-main {
+    padding: 1rem 0.75rem;
+  }
+}
+
 /* 控制栏 */
 .control-bar {
   display: flex;
@@ -436,6 +602,8 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  max-width: 100%;
+  flex-wrap: wrap;
 }
 
 .select-input {

@@ -43,7 +43,34 @@
             />
           </div>
 
+          <!-- 分类选择 -->
+          <div class="form-group">
+            <label>图片分类</label>
+            <select v-model="category" class="form-input">
+              <option value="其他">其他</option>
+              <option value="运动">运动</option>
+              <option value="日常">日常</option>
+              <option value="游戏">游戏</option>
+            </select>
+          </div>
+
+          <!-- 可见性选择 -->
+          <div class="form-group">
+            <label>可见性</label>
+            <div class="radio-group">
+              <label class="radio-label" :class="{ active: isPublic }">
+                <input type="radio" v-model="isPublic" :value="true" />
+                <i class="fas fa-globe"></i> 公开
+              </label>
+              <label class="radio-label" :class="{ active: !isPublic }">
+                <input type="radio" v-model="isPublic" :value="false" />
+                <i class="fas fa-lock"></i> 私密
+              </label>
+            </div>
+          </div>
+
           <!-- 描述输入 -->
+
           <div class="form-group">
             <label>图片描述</label>
             <textarea
@@ -76,7 +103,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   close: []
-  upload: [{ title: string; description: string; file: File }]
+  upload: [{ title: string; description: string; category: string; isPublic: boolean; file: File }]
 }>()
 
 const fileInputRef = ref<HTMLInputElement | null>(null)
@@ -84,7 +111,10 @@ const previewUrl = ref('')
 const fileData = ref<File | null>(null)
 const title = ref('')
 const description = ref('')
+const category = ref('其他')
+const isPublic = ref(true)
 const uploading = ref(false)
+
 
 const triggerFileInput = () => {
   fileInputRef.value?.click()
@@ -127,8 +157,11 @@ const handleUpload = () => {
   emit('upload', {
     title: title.value,
     description: description.value,
+    category: category.value,
+    isPublic: isPublic.value,
     file: fileData.value
   })
+
 }
 
 // 暴露重置方法给父组件
@@ -208,7 +241,10 @@ defineExpose({ reset })
 
 .modal-body {
   padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
 }
+
 
 .upload-zone {
   border: 2px dashed #d1d5db;
@@ -299,7 +335,41 @@ defineExpose({ reset })
   box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
 }
 
+.radio-group {
+  display: flex;
+  gap: 1rem;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #374151;
+  transition: all 0.2s;
+  background-color: white;
+}
+
+.radio-label input {
+  display: none;
+}
+
+.radio-label.active {
+  border-color: var(--primary-color);
+  background-color: rgba(79, 70, 229, 0.08);
+  color: var(--primary-color);
+}
+
+.radio-label i {
+  font-size: 0.9rem;
+}
+
 .modal-footer {
+
   padding: 1rem 1.5rem;
   background-color: #f9fafb;
   display: flex;

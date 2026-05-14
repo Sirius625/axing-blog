@@ -4,7 +4,7 @@
       <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-purple-500/30">
         <i class="fas fa-music"></i>
       </div>
-      <h1 class="text-xl font-bold tracking-tight text-white">Music</h1>
+      <h1 class="text-xl font-bold tracking-tight text-white">兮易云</h1>
     </div>
 
     <nav class="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">

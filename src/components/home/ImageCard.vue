@@ -12,7 +12,15 @@
         <i class="fas fa-heart"></i>
         <span>{{ image.likes }}</span>
       </div>
+      <div class="category-badge" :class="'category-' + (image.category || '其他')">
+        {{ image.category || '其他' }}
+      </div>
+      <div class="visibility-badge" :class="image.isPublic ? 'public' : 'private'">
+        <i :class="image.isPublic ? 'fas fa-globe' : 'fas fa-lock'"></i>
+        {{ image.isPublic ? '公开' : '私密' }}
+      </div>
     </div>
+
     <div class="card-info">
       <div class="info-header">
         <span class="info-title">{{ image.title }}</span>
@@ -30,11 +38,14 @@ defineProps<{
     url: string
     title: string
     description: string
+    category: string
     author: string
     likes: number
+    isPublic: boolean
     date: string
   }
 }>()
+
 
 defineEmits<{
   preview: [image: any]
@@ -139,7 +150,72 @@ defineEmits<{
   opacity: 1;
 }
 
+.category-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+  box-shadow: var(--shadow-sm);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.image-card:hover .category-badge {
+  opacity: 1;
+}
+
+.category-运动 {
+  background: linear-gradient(135deg, #f97316, #ef4444);
+}
+
+.category-日常 {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.category-游戏 {
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+}
+
+.category-其他 {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+}
+
+.visibility-badge {
+  position: absolute;
+  top: 2.5rem;
+  left: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+  box-shadow: var(--shadow-sm);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+
+.visibility-badge.public {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.visibility-badge.private {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.image-card:hover .visibility-badge {
+  opacity: 1;
+}
+
 .card-info {
+
   padding: 1rem;
 }
 
