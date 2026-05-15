@@ -532,14 +532,14 @@ onMounted(() => {
   z-index: 10;
   max-width: 80rem;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 2rem 1rem 6rem;
   background-color: transparent;
   min-height: calc(100vh - 4rem);
 }
 
 @media (max-width: 768px) {
   .app-main {
-    padding: 1rem 0.75rem;
+    padding: 1rem 0.75rem 5rem;
   }
 }
 

@@ -3,7 +3,7 @@
     style="background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);">
 
     <!-- 移动端底部导航 Tab -->
-    <div class="fixed bottom-20 left-0 right-0 z-40 flex md:hidden bg-[#1a1a2e]/95 backdrop-blur-xl border-t border-white/10" style="touch-action: none;">
+    <div :class="['fixed left-0 right-0 z-40 flex md:hidden bg-[#1a1a2e]/95 backdrop-blur-xl border-t border-white/10', playerStore.currentSong ? 'bottom-20' : 'bottom-0']" style="touch-action: none;">
       <button v-for="tab in mobileTabs" :key="tab.id" @click="switchTab(tab.id)"
         :class="activeTab === tab.id ? 'text-purple-400 bg-purple-500/10' : 'text-white/50'"
         class="flex-1 flex flex-col items-center py-2 text-xs transition-colors">
@@ -205,6 +205,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
 import { useAuthStore } from '@/store'
 import { usePlayerStore } from '@/store/player'
 import { getPersonalized, getToplist, getTetail, getSearch } from '@/api/http'
@@ -414,6 +415,15 @@ const refreshData = () => {
 const isLiked = (id: number) => likedSongs.value.some(s => s.id === id)
 
 const toggleLike = async (song: Song) => {
+  // 未登录用户不允许喜欢操作
+  if (!localStorage.getItem('token')) {
+    ElMessage({
+      message: '未登录，游客状态不能进行喜欢标记',
+      type: 'error',
+      duration: 1000
+    })
+    return
+  }
   try {
     await toggleLikeSong(song)
   } catch (e) {

@@ -331,35 +331,63 @@ watch(() => props.image, () => {
 
 /* 移动端适配 */
 @media (max-width: 768px) {
+  .preview-overlay {
+    padding: 0.5rem;
+  }
+
   .preview-toolbar {
-    top: 0.75rem;
-    padding: 0.4rem 0.5rem;
-    gap: 0.25rem;
+    top: 0.5rem;
+    padding: 0.3rem 0.4rem;
+    gap: 0.2rem;
   }
 
   .toolbar-btn {
-    width: 2rem;
-    height: 2rem;
-    font-size: 0.85rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.75rem;
   }
 
   .zoom-level {
-    font-size: 0.7rem;
-    min-width: 2.5rem;
+    font-size: 0.65rem;
+    min-width: 2rem;
+  }
+
+  .preview-content {
+    padding-bottom: 0;
+  }
+
+  .preview-image {
+    max-height: 70vh;
   }
 
   .preview-info {
-    bottom: 1rem;
-    padding: 0.75rem 1rem;
+    position: relative;
+    bottom: auto;
+    left: auto;
+    transform: none;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    pointer-events: auto;
   }
 
   .preview-title {
-    font-size: 1rem;
+    font-size: 0.9rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .preview-desc {
+    font-size: 0.75rem;
+    margin-bottom: 0.3rem;
   }
 
   .preview-meta {
-    gap: 1rem;
-    font-size: 0.75rem;
+    gap: 0.75rem;
+    font-size: 0.7rem;
+    flex-wrap: wrap;
   }
 }
 </style>
