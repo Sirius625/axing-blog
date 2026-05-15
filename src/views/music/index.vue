@@ -233,6 +233,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useAuthStore } from '@/store'
 import { getPersonalized, getToplist, getTetail, getSongUrl, getLyric, getSearch } from '@/api/http'
 import { toggleLikeSong, getSongs, addHistory, getHistory, deleteHistory, playSongCount } from '@/api/http1'
 import MusicSidebar from '@/components/music/MusicSidebar.vue'
@@ -657,9 +658,15 @@ const getHistorySongs = async () => {
 
 // --- 生命周期 ---
 onMounted(() => {
+  // 不需要登录的接口 - 直接请求
   fetchRecommendPlaylists()
-  getLikedSongs()
-  getHistorySongs()
+
+  // 需要登录的接口 - 先判断登录状态
+  const authStore = useAuthStore()
+  if (authStore.isLoggedIn) {
+    getLikedSongs()
+    getHistorySongs()
+  }
 
   const savedHistory = localStorage.getItem('play_history')
   if (savedHistory) historySongs.value = JSON.parse(savedHistory)
