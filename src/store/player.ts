@@ -63,9 +63,11 @@ export const usePlayerStore = defineStore('player', () => {
     lyrics.value = []
     currentLyricIndex.value = -1
 
-    // 记录播放历史（静默处理，不阻塞播放）
-    addHistory(song).catch(() => {})
-    playSongCount(song).catch(() => {})
+    // 记录播放历史（仅登录用户）
+    if (localStorage.getItem('token')) {
+      addHistory(song).catch(() => {})
+      playSongCount(song).catch(() => {})
+    }
 
     try {
       const res = await getSongUrl(song.id)
