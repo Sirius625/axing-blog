@@ -5,12 +5,46 @@
   </main>
   <loginModel :modelValue="showLoginModal" @update:modelValue="showLoginModal = $event"
     @login-success="handleLoginSuccess"></loginModel>
+
+  <!-- 全局音乐播放器 -->
+  <MusicPlayer
+    v-if="playerStore.currentSong"
+    :currentSong="playerStore.currentSong"
+    :isPlaying="playerStore.isPlaying"
+    :isLiked="false"
+    :isMuted="playerStore.volume === 0"
+    :currentTime="playerStore.currentTime"
+    :duration="playerStore.duration"
+    :volume="playerStore.volume * 100"
+    @togglePlay="playerStore.togglePlay"
+    @prev="playerStore.prevSong"
+    @next="playerStore.nextSong"
+    @toggleLike="() => {}"
+    @toggleLyrics="playerStore.toggleLyricModal"
+    @toggleMute="playerStore.toggleMute"
+    @seek="playerStore.seekTo"
+    @setVolume="playerStore.setVolume"
+  />
+
+  <!-- 全局歌词模态框 -->
+  <LyricModal
+    :visible="playerStore.showLyricModal"
+    :song="playerStore.currentSong"
+    :lyrics="playerStore.lyrics"
+    :currentTime="playerStore.currentTime"
+    @close="playerStore.showLyricModal = false"
+  />
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import headerNav from './components/header-nav.vue';
 import loginModel from './components/loginModel.vue';
+import MusicPlayer from './components/music/MusicPlayer.vue';
+import LyricModal from './components/music/LyricModal.vue';
+import { usePlayerStore } from './store/player';
+
+const playerStore = usePlayerStore()
 
 const showLoginModal = ref(false)
 
@@ -25,12 +59,17 @@ const handleTokenExpired = () => {
   showLoginModal.value = true
 }
 
+let cleanupAudio: (() => void) | null = null
+
 onMounted(() => {
   window.addEventListener('token-expired', handleTokenExpired)
+  // 初始化全局音频监听
+  cleanupAudio = playerStore.initAudioListeners()
 })
 
 onUnmounted(() => {
   window.removeEventListener('token-expired', handleTokenExpired)
+  if (cleanupAudio) cleanupAudio()
 })
 </script>
 

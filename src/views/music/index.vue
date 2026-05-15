@@ -199,49 +199,20 @@
           </div>
         </div>
       </div>
-
-      <!-- 歌词模态框 -->
-      <LyricModal
-        :visible="showLyricModal"
-        :song="currentSong"
-        :lyrics="lyrics"
-        :currentTime="currentTime"
-        @close="showLyricModal = false"
-      />
     </main>
-
-    <!-- 底部播放控制栏 -->
-    <MusicPlayer
-      :currentSong="currentSong"
-      :isPlaying="isPlaying"
-      :isLiked="currentSong ? isLiked(currentSong.id) : false"
-      :isMuted="volume === 0"
-      :currentTime="currentTime"
-      :duration="duration"
-      :volume="volume"
-      @togglePlay="togglePlay"
-      @prev="prevSong"
-      @next="nextSong"
-      @toggleLike="toggleLike"
-      @toggleLyrics="toggleLyricModal"
-      @toggleMute="toggleMute"
-      @seek="seekTo"
-      @setVolume="setVolume"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '@/store'
-import { getPersonalized, getToplist, getTetail, getSongUrl, getLyric, getSearch } from '@/api/http'
-import { toggleLikeSong, getSongs, addHistory, getHistory, deleteHistory, playSongCount } from '@/api/http1'
+import { usePlayerStore } from '@/store/player'
+import { getPersonalized, getToplist, getTetail, getSearch } from '@/api/http'
+import { toggleLikeSong, getSongs, addHistory, getHistory, deleteHistory } from '@/api/http1'
 import MusicSidebar from '@/components/music/MusicSidebar.vue'
 import MusicSearch from '@/components/music/MusicSearch.vue'
 import SongTable from '@/components/music/SongTable.vue'
 import PlaylistCard from '@/components/music/PlaylistCard.vue'
-import MusicPlayer from '@/components/music/MusicPlayer.vue'
-import LyricModal from '@/components/music/LyricModal.vue'
 
 // --- 类型定义 ---
 interface Playlist {
@@ -261,10 +232,8 @@ interface Song {
   dt: number
 }
 
-interface LyricLine {
-  time: number
-  text: string
-}
+// 使用全局播放器 store
+const playerStore = usePlayerStore()
 
 // 移动端底部导航 Tab 配置
 const mobileTabs = [
@@ -277,11 +246,6 @@ const mobileTabs = [
 
 const playlists = ref<Playlist[]>([])
 const toplistData = ref<any[]>([])
-const currentSong = ref<Song | null>(null)
-const isPlaying = ref(false)
-const currentTime = ref(0)
-const duration = ref(0)
-const volume = ref(0.8)
 const searchQuery = ref('')
 const likedSearchQuery = ref('')
 const loading = ref(false)
@@ -305,26 +269,9 @@ const filteredLikedSongs = computed(() => {
   })
 })
 
-const showLyricModal = ref(false)
-const lyrics = ref<LyricLine[]>([])
-const currentLyricIndex = ref(-1)
 const searchResults = ref<Song[]>([])
 
-// 播放队列
-const playQueue = ref<Song[]>([])
-const queueIndex = ref(0)
-
-const audioPlayer = new Audio()
-audioPlayer.volume = volume.value
-
 // --- 方法 ---
-
-const formatNumber = (num: number) => {
-  if (!num) return '0'
-  if (num > 100000000) return (num / 100000000).toFixed(1) + '亿'
-  if (num > 10000) return (num / 10000).toFixed(1) + '万'
-  return num.toString()
-}
 
 const formatTime = (seconds: number) => {
   if (!seconds || isNaN(seconds)) return '00:00'
@@ -385,7 +332,7 @@ const getPlaylistDetail = async (id: number) => {
         al: t.al || { picUrl: '', name: '' },
         dt: t.dt || 0
       }))
-      setPlayQueue(songs, 0)
+      playerStore.setPlayQueue(songs, 0)
     }
   } catch (e) {
     console.error('Failed to get playlist detail', e)
@@ -394,139 +341,14 @@ const getPlaylistDetail = async (id: number) => {
   }
 }
 
-// 设置播放队列
-const setPlayQueue = (songs: Song[], startIndex: number = 0) => {
-  playQueue.value = songs
-  queueIndex.value = startIndex
-  if (songs.length > 0) {
-    playSong(songs[startIndex])
-  }
-}
-
-// 播放歌曲
-const playSong = async (song: Song) => {
-  const indexInQueue = playQueue.value.findIndex(s => s.id === song.id)
-  if (indexInQueue !== -1) {
-    queueIndex.value = indexInQueue
-  }
-
-  currentSong.value = song
-  lyrics.value = []
-  currentLyricIndex.value = -1
-
-  addToHistory(song)
-
-  try {
-    const res = await getSongUrl(song.id)
-    const url = res.data?.[0]?.url
-    if (url) {
-      audioPlayer.src = url
-      audioPlayer.play()
-      isPlaying.value = true
-      fetchLyrics(song.id)
-      playSongCount(song)
-    } else {
-      console.warn('No URL found for song:', song.name)
-      // 不自动跳转下一首，让用户手动选择
-    }
-  } catch (e) {
-    console.error('Play error', e)
-    // 不自动跳转下一首，让用户手动选择
-  }
+// 播放歌曲 - 委托给全局 store
+const playSong = (song: Song) => {
+  playerStore.playSong(song)
 }
 
 // 从搜索结果播放
 const playSongFromSearch = (song: Song, index: number) => {
-  setPlayQueue(searchResults.value, index)
-}
-
-// 获取歌词
-const fetchLyrics = async (id: number) => {
-  try {
-    const res = await getLyric(id)
-    const lyricStr = res.data
-    if (lyricStr) {
-      parseLyrics(lyricStr)
-    }
-  } catch (e) {
-    console.error('Fetch lyrics error', e)
-  }
-}
-
-// 解析歌词
-const parseLyrics = (lyricStr: string) => {
-  const lines = lyricStr.split('\n')
-  const parsed: LyricLine[] = []
-  const timeReg = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/
-  lines.forEach(line => {
-    const match = timeReg.exec(line)
-    if (match) {
-      const minutes = parseInt(match[1])
-      const seconds = parseInt(match[2])
-      const milliseconds = parseInt(match[3].padEnd(3, '0'))
-      const time = minutes * 60 + seconds + milliseconds / 1000
-      const text = line.replace(timeReg, '').trim()
-      if (text) {
-        parsed.push({ time, text })
-      }
-    }
-  })
-  lyrics.value = parsed
-}
-
-const togglePlay = () => {
-  if (!currentSong.value) return
-  if (isPlaying.value) {
-    audioPlayer.pause()
-  } else {
-    audioPlayer.play()
-  }
-  isPlaying.value = !isPlaying.value
-}
-
-const prevSong = () => {
-  if (playQueue.value.length === 0) return
-  let prevIndex = queueIndex.value - 1
-  if (prevIndex < 0) {
-    prevIndex = playQueue.value.length - 1
-  }
-  queueIndex.value = prevIndex
-  playSong(playQueue.value[prevIndex])
-}
-
-const nextSong = () => {
-  if (playQueue.value.length === 0) return
-  let nextIndex = queueIndex.value + 1
-  if (nextIndex >= playQueue.value.length) {
-    nextIndex = 0
-  }
-  queueIndex.value = nextIndex
-  playSong(playQueue.value[nextIndex])
-}
-
-const seekTo = (time: number) => {
-  audioPlayer.currentTime = time
-  currentTime.value = time
-}
-
-const toggleMute = () => {
-  if (volume.value === 0) {
-    volume.value = 0.8
-    audioPlayer.volume = 0.8
-  } else {
-    volume.value = 0
-    audioPlayer.volume = 0
-  }
-}
-
-const setVolume = (vol: number) => {
-  volume.value = vol
-  audioPlayer.volume = vol
-}
-
-const toggleLyricModal = () => {
-  if (!currentSong.value) return
-  showLyricModal.value = !showLyricModal.value
+  playerStore.setPlayQueue(searchResults.value, index)
 }
 
 // --- 搜索逻辑 ---
@@ -630,12 +452,11 @@ const clearHistory = async () => {
 
 const playAllLiked = () => {
   if (likedSongs.value.length > 0) {
-    setPlayQueue(likedSongs.value, 0)
+    playerStore.setPlayQueue(likedSongs.value, 0)
   }
 }
 
 const getLikedSongs = async () => {
-  // 未登录或 token 不存在时跳过，避免 401 报错
   if (!localStorage.getItem('token')) return
   try {
     const response = await getSongs(1, 100)
@@ -646,7 +467,6 @@ const getLikedSongs = async () => {
 }
 
 const getHistorySongs = async () => {
-  // 未登录或 token 不存在时跳过，避免 401 报错
   if (!localStorage.getItem('token')) return
   try {
     const response = await getHistory(1, 50)
@@ -673,37 +493,6 @@ onMounted(() => {
 
   const savedSearchHistory = localStorage.getItem('search_history')
   if (savedSearchHistory) searchHistory.value = JSON.parse(savedSearchHistory)
-
-  let rafId: number | null = null
-  const onTimeUpdate = () => {
-    if (rafId !== null) return
-    rafId = requestAnimationFrame(() => {
-      rafId = null
-      currentTime.value = audioPlayer.currentTime
-      duration.value = audioPlayer.duration || 0
-
-      if (lyrics.value.length > 0) {
-        const idx = lyrics.value.findIndex((l, i) => {
-          const next = lyrics.value[i + 1]
-          return audioPlayer.currentTime >= l.time && (!next || audioPlayer.currentTime < next.time)
-        })
-        if (idx !== -1 && idx !== currentLyricIndex.value) {
-          currentLyricIndex.value = idx
-        }
-      }
-    })
-  }
-  audioPlayer.addEventListener('timeupdate', onTimeUpdate)
-
-  audioPlayer.addEventListener('ended', () => {
-    isPlaying.value = false
-    nextSong()
-  })
-})
-
-onUnmounted(() => {
-  audioPlayer.pause()
-  audioPlayer.src = ''
 })
 </script>
 
