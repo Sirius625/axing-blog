@@ -51,8 +51,7 @@ import { ref, reactive, watch } from 'vue';
 import { registerUser, loginUser } from '@/api/http1'
 import { useAuthStore } from '@/store'
 import { ElMessage } from 'element-plus'
-// 如果自动导入未配置样式，需手动引入样式（视构建工具而定）
-import 'element-plus/es/components/message/style/css'
+import 'element-plus/theme-chalk/el-message.css'
 const authStore = useAuthStore()
 // 定义Props
 interface Props {
@@ -147,10 +146,21 @@ const handleLogin = async () => {
             localStorage.setItem('username', form.username)
             emit('login-success')
         } else {
-            // 这里可以显示错误消息
-            console.error('用户名或密码错误')
+            ElMessage({
+                message: '用户名或密码错误',
+                type: 'error',
+                duration: 2000,
+                offset: window.innerHeight / 3
+            })
         }
-    } catch (error) {
+    } catch (error: any) {
+        const errMsg = error?.response?.data?.message || error?.message || '登录失败，请检查网络连接'
+        ElMessage({
+            message: errMsg,
+            type: 'error',
+            duration: 2000,
+            offset: window.innerHeight / 3
+        })
         console.error('登录失败:', error)
     } finally {
         isLoading.value = false;
