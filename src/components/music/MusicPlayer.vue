@@ -162,9 +162,7 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   height: 5.5rem;
-  background: var(--player-bg);
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  background: rgba(10, 8, 30, 0.98);
   border-top: 1px solid var(--player-border);
   z-index: 50;
   padding: 0 1.5rem;

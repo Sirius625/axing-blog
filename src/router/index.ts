@@ -16,7 +16,13 @@ const routes = [
     name: 'knowledge',
     component: () => import('../views/knowledge/index.vue')
   },
+    {
+    path: '/blog',
+    name: 'blog',
+    component: () => import('../views/blog/index.vue')
+  },
 ]
+
 
 const router = createRouter({
   history: createWebHistory(),

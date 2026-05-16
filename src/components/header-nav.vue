@@ -79,8 +79,10 @@ const authStore = useAuthStore()
 const navItems = [
     { id: 1, text: '首页', name: 'home', icon: 'fa-solid fa-house' },
     { id: 2, text: '音乐', name: 'music', icon: 'fa-solid fa-music' },
-    { id: 3, text: '知识', name: 'knowledge', icon: 'fa-solid fa-book' }
+    { id: 3, text: '知识', name: 'knowledge', icon: 'fa-solid fa-book' },
+    { id: 4, text: '博客', name: 'blog', icon: 'fa-solid fa-pen-fancy' }
 ]
+
 
 const showLogoutMenu = ref(false)
 
@@ -124,7 +126,7 @@ onUnmounted(() => {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 10;
+    z-index: 1000;
     max-width: 100%;
     background: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(20px);
@@ -421,7 +423,6 @@ onUnmounted(() => {
 @media (max-width: 768px) {
     .navbar {
         width: 100%;
-        overflow: hidden;
     }
 
     .navbar-inner {

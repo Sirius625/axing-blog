@@ -95,3 +95,68 @@ export const playSongCount = async (song: SongData) => {
   })
   return result.data || { data: null }
 }
+
+// ==================== 博客文章 API ====================
+
+export interface Article {
+  id: number
+  title: string
+  content: string
+  summary: string
+  category: string
+  tags: string[]
+  cover: string
+  author: string
+  likes: number
+  views: number
+  created_at: string
+  updated_at: string
+}
+
+export const getArticles = async (params: { page?: number; pageSize?: number; category?: string; keyword?: string } = {}) => {
+  const result = await get1<{ success: boolean; data: Article[]; total: number }>('/api/articles', { params })
+  // result.data = { success: true, data: [...], total: N }
+  if (result.data && result.data.success) {
+    return { data: result.data.data, total: result.data.total }
+  }
+  return { data: [], total: 0 }
+}
+
+export const getArticle = async (id: number) => {
+  const result = await get1<{ success: boolean; data: Article }>('/api/articles/' + id)
+  if (result.data && result.data.success) {
+    return result.data.data
+  }
+  return null
+}
+
+export const createArticle = async (data: { title: string; content: string; summary?: string; category?: string; tags?: string[]; cover?: string }) => {
+  const result = await post1<{ success: boolean; data: { id: number } }>('/api/articles', data)
+  if (result.data && result.data.success) {
+    return result.data.data
+  }
+  return null
+}
+
+export const updateArticle = async (id: number, data: { title: string; content: string; summary?: string; category?: string; tags?: string[]; cover?: string }) => {
+  const result = await put1<{ success: boolean }>('/api/articles/' + id, data)
+  return result.data
+}
+
+export const deleteArticle = async (id: number) => {
+  const result = await del1<{ success: boolean }>('/api/articles/' + id)
+  return result.data
+}
+
+export const likeArticle = async (id: number) => {
+  const result = await post1<{ success: boolean }>('/api/articles/' + id + '/like')
+  return result.data
+}
+
+export const getArticleCategories = async () => {
+  const result = await get1<{ success: boolean; data: string[] }>('/api/articles/categories')
+  if (result.data && result.data.success) {
+    return result.data.data
+  }
+  return []
+}

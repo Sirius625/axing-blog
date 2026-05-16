@@ -3,12 +3,12 @@
         <div class="modal-container">
             <!-- 头部 -->
             <div class="modal-header">
-                <h2>用户登录</h2>
+                <h2>{{ isRegisterMode ? '用户注册' : '用户登录' }}</h2>
                 <button class="close-btn" @click="close">&times;</button>
             </div>
 
-            <!-- 表单区域 -->
-            <form @submit.prevent="handleLogin" class="modal-body">
+            <!-- 登录表单 -->
+            <form v-if="!isRegisterMode" @submit.prevent="handleLogin" class="modal-body">
                 <div class="form-group">
                     <label for="username">用户名</label>
                     <input type="text" id="username" v-model="form.username" placeholder="请输入用户名"
@@ -38,9 +38,43 @@
                 </button>
             </form>
 
+            <!-- 注册表单 -->
+            <form v-else @submit.prevent="handleRegister" class="modal-body">
+                <div class="form-group">
+                    <label for="reg-username">用户名</label>
+                    <input type="text" id="reg-username" v-model="registerForm.name" placeholder="请输入用户名"
+                        :class="{ 'error-border': regErrors.name }" />
+                    <span v-if="regErrors.name" class="error-msg">{{ regErrors.name }}</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-password">密码</label>
+                    <input type="password" id="reg-password" v-model="registerForm.password" placeholder="请输入密码"
+                        :class="{ 'error-border': regErrors.password }" />
+                    <span v-if="regErrors.password" class="error-msg">{{ regErrors.password }}</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-confirm">确认密码</label>
+                    <input type="password" id="reg-confirm" v-model="registerForm.confirmPassword" placeholder="请再次输入密码"
+                        :class="{ 'error-border': regErrors.confirmPassword }" />
+                    <span v-if="regErrors.confirmPassword" class="error-msg">{{ regErrors.confirmPassword }}</span>
+                </div>
+
+                <button type="submit" class="login-btn" :disabled="isLoading">
+                    <span v-if="isLoading" class="spinner"></span>
+                    <span v-else>立即注册</span>
+                </button>
+            </form>
+
             <!-- 底部 -->
             <div class="modal-footer">
-                <p>还没有账号? <a href="#" @click.prevent="switchToRegister">立即注册</a></p>
+                <p v-if="!isRegisterMode">
+                    还没有账号? <a href="#" @click.prevent="switchToRegister">立即注册</a>
+                </p>
+                <p v-else>
+                    已有账号? <a href="#" @click.prevent="switchToLogin">返回登录</a>
+                </p>
             </div>
         </div>
     </div>
@@ -64,6 +98,9 @@ const emit = defineEmits(['update:modelValue', 'login-success']);
 // 状态管理
 const visible = ref(props.modelValue);
 const isLoading = ref(false);
+const isRegisterMode = ref(false);
+
+// 登录表单
 const errors = reactive({
     username: '',
     password: ''
@@ -73,6 +110,19 @@ const form = reactive({
     username: '',
     password: '',
     rememberMe: false
+});
+
+// 注册表单
+const registerForm = reactive({
+    name: '',
+    password: '',
+    confirmPassword: ''
+});
+
+const regErrors = reactive({
+    name: '',
+    password: '',
+    confirmPassword: ''
 });
 
 // 监听外部visible变化
@@ -101,8 +151,100 @@ const close = () => {
 };
 
 const switchToRegister = () => {
-    alert('跳转到注册页面逻辑');
-}
+    isRegisterMode.value = true;
+    // 重置注册表单
+    registerForm.name = '';
+    registerForm.password = '';
+    registerForm.confirmPassword = '';
+    regErrors.name = '';
+    regErrors.password = '';
+    regErrors.confirmPassword = '';
+};
+
+const switchToLogin = () => {
+    isRegisterMode.value = false;
+};
+
+// 注册验证
+const validateRegister = (): boolean => {
+    let isValid = true;
+    regErrors.name = '';
+    regErrors.password = '';
+    regErrors.confirmPassword = '';
+
+    if (!registerForm.name.trim()) {
+        regErrors.name = '用户名不能为空';
+        isValid = false;
+    } else if (registerForm.name.length < 2) {
+        regErrors.name = '用户名至少2个字符';
+        isValid = false;
+    }
+
+    if (!registerForm.password) {
+        regErrors.password = '密码不能为空';
+        isValid = false;
+    } else if (registerForm.password.length < 6) {
+        regErrors.password = '密码至少6个字符';
+        isValid = false;
+    }
+
+    if (!registerForm.confirmPassword) {
+        regErrors.confirmPassword = '请再次输入密码';
+        isValid = false;
+    } else if (registerForm.confirmPassword !== registerForm.password) {
+        regErrors.confirmPassword = '两次输入密码不一致';
+        isValid = false;
+    }
+
+    return isValid;
+};
+
+// 处理注册
+const handleRegister = async () => {
+    if (!validateRegister()) return;
+    isLoading.value = true;
+    try {
+        const result = await registerUser({
+            name: registerForm.name,
+            password: registerForm.password,
+            email: registerForm.name + '@temp.com',
+            role: '普通用户'
+        })
+        if (result && result.id) {
+            ElMessage({
+                message: '注册成功，正在自动登录...',
+                type: 'success',
+                duration: 1500,
+                offset: window.innerHeight / 3
+            })
+            // 注册成功后自动登录
+            const user = await loginUser(registerForm.name, registerForm.password)
+            if (user) {
+                authStore.login(user)
+                localStorage.setItem('username', registerForm.name)
+                emit('login-success')
+            }
+        } else {
+            ElMessage({
+                message: result?.message || '注册失败',
+                type: 'error',
+                duration: 2000,
+                offset: window.innerHeight / 3
+            })
+        }
+    } catch (error: any) {
+        const errMsg = error?.response?.data?.message || error?.message || '注册失败，请检查网络连接'
+        ElMessage({
+            message: errMsg,
+            type: 'error',
+            duration: 2000,
+            offset: window.innerHeight / 3
+        })
+        console.error('注册失败:', error)
+    } finally {
+        isLoading.value = false;
+    }
+};
 
 // 验证逻辑
 const validate = (): boolean => {
@@ -167,10 +309,6 @@ const handleLogin = async () => {
     }
 };
 
-// 切换到注册（示例功能）
-// const switchToRegister = () => {
-//     alert('跳转到注册页面逻辑');
-// };
 </script>
 
 <style scoped>

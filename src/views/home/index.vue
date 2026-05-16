@@ -547,7 +547,7 @@ onMounted(() => {
 .control-bar {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-bottom: 2rem;
   background-color: var(--card-bg);
   padding: 1rem;
@@ -561,14 +561,15 @@ onMounted(() => {
   .control-bar {
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    gap: 1.5rem;
   }
 }
 
 .search-box {
   position: relative;
   flex: 1;
-  max-width: 28rem;
+  max-width: 32rem;
+  min-width: 12rem;
 }
 
 .search-icon {
@@ -607,6 +608,25 @@ onMounted(() => {
   gap: 0.75rem;
   max-width: 100%;
   flex-wrap: wrap;
+}
+
+@media (max-width: 767px) {
+  .filter-controls {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+  }
+
+  .filter-controls .select-input {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.8rem;
+    padding: 0.4rem 1.6rem 0.4rem 0.5rem;
+  }
+
+  .filter-controls .view-toggle {
+    flex-shrink: 0;
+  }
 }
 
 .select-input {
