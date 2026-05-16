@@ -1,9 +1,9 @@
 /**
  * 音乐播放器状态管理
- * 
+ *
  * 基于 Pinia 的音乐播放器核心逻辑，包含音频控制、播放队列管理、
  * 歌词解析与同步、播放历史记录等功能。
- * 
+ *
  * @module store/player
  */
 
@@ -17,14 +17,14 @@ export interface Song {
   id: number
   name: string
   ar: { name: string }[]
-  al: { picUrl: string, name?: string }
+  al: { picUrl: string; name?: string }
   dt: number
 }
 
 /** 歌词行数据结构 */
 export interface LyricLine {
-  time: number   // 时间点（秒）
-  text: string   // 歌词文本
+  time: number // 时间点（秒）
+  text: string // 歌词文本
 }
 
 /**
@@ -86,7 +86,7 @@ export const usePlayerStore = defineStore('player', () => {
    * @param song - 要播放的歌曲
    */
   const playSong = async (song: Song) => {
-    const indexInQueue = playQueue.value.findIndex(s => s.id === song.id)
+    const indexInQueue = playQueue.value.findIndex((s) => s.id === song.id)
     if (indexInQueue !== -1) {
       queueIndex.value = indexInQueue
     }
@@ -142,7 +142,7 @@ export const usePlayerStore = defineStore('player', () => {
     const lines = lyricStr.split('\n')
     const parsed: LyricLine[] = []
     const timeReg = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/
-    lines.forEach(line => {
+    lines.forEach((line) => {
       const match = timeReg.exec(line)
       if (match) {
         const minutes = parseInt(match[1])
@@ -245,7 +245,9 @@ export const usePlayerStore = defineStore('player', () => {
         if (lyrics.value.length > 0) {
           const idx = lyrics.value.findIndex((l, i) => {
             const next = lyrics.value[i + 1]
-            return audioPlayer.currentTime >= l.time && (!next || audioPlayer.currentTime < next.time)
+            return (
+              audioPlayer.currentTime >= l.time && (!next || audioPlayer.currentTime < next.time)
+            )
           })
           if (idx !== -1 && idx !== currentLyricIndex.value) {
             currentLyricIndex.value = idx

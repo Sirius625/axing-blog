@@ -1,8 +1,8 @@
 /**
  * Pinia 状态管理
- * 
+ *
  * 提供全局状态管理，包括用户认证状态（useAuthStore）和系统设置（useSettingsStore）。
- * 
+ *
  * @module store/index
  */
 
@@ -48,21 +48,35 @@ export const useAuthStore = defineStore('auth', {
       /** 是否已登录 */
       isLoggedIn: !!savedToken && !!parsedUser,
       /** 当前用户信息 */
-      user: parsedUser as { id: number; name: string; email: string; role: string; avatar?: string, token?: string } | null,
+      user: parsedUser as {
+        id: number
+        name: string
+        email: string
+        role: string
+        avatar?: string
+        token?: string
+      } | null,
       /** 认证 Token */
       token: savedToken
     }
   },
   getters: {
     /** 用户角色（admin / editor） */
-    role: (state) => state.user?.role === '管理员' ? 'admin' : 'editor'
+    role: (state) => (state.user?.role === '管理员' ? 'admin' : 'editor')
   },
   actions: {
     /**
      * 登录
      * 保存用户信息和 Token 到状态和 localStorage
      */
-    login(user: { id: number; name: string; email: string; role: string, avatar?: string, token: string }) {
+    login(user: {
+      id: number
+      name: string
+      email: string
+      role: string
+      avatar?: string
+      token: string
+    }) {
       this.isLoggedIn = true
       this.user = user
       this.token = user.token

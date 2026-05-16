@@ -4,7 +4,7 @@
       <div class="modal-backdrop"></div>
       <div class="modal-container">
         <div class="modal-header">
-          <h3>上传图片</h3>
+          <h3>上传视频</h3>
           <button class="close-btn" @click="$emit('close')">
             <i class="fas fa-times"></i>
           </button>
@@ -15,38 +15,31 @@
             <input
               ref="fileInputRef"
               type="file"
-              accept="image/jpeg,image/png,image/webp"
+              accept="video/mp4,video/webm,video/ogg,video/x-matroska"
               class="hidden-input"
               @change="handleFileSelect"
             />
             <div v-if="!previewUrl" class="upload-placeholder">
               <div class="upload-icon">
-                <i class="fas fa-cloud-upload-alt"></i>
+                <i class="fas fa-video"></i>
               </div>
-              <p class="upload-text">点击选择图片</p>
-              <p class="upload-hint">支持 JPG、PNG、WebP，最大 5MB</p>
+              <p class="upload-text">点击选择视频</p>
+              <p class="upload-hint">支持 MP4、WebM、OGG、MKV，最大 100MB</p>
             </div>
             <div v-else class="preview-area">
-              <img :src="previewUrl" alt="预览" class="preview-img" />
+              <video :src="previewUrl" class="preview-video" controls></video>
+              <div class="file-info">
+                <span class="file-name">{{ fileName }}</span>
+                <span class="file-size">{{ formatFileSize(fileSize) }}</span>
+              </div>
               <button class="change-btn" @click.stop="triggerFileInput">重新选择</button>
             </div>
           </div>
 
           <!-- 标题输入 -->
           <div class="form-group">
-            <label>图片标题</label>
-            <input v-model="title" type="text" class="form-input" placeholder="请输入图片标题" />
-          </div>
-
-          <!-- 分类选择 -->
-          <div class="form-group">
-            <label>图片分类</label>
-            <select v-model="category" class="form-input">
-              <option value="其他">其他</option>
-              <option value="运动">运动</option>
-              <option value="日常">日常</option>
-              <option value="游戏">游戏</option>
-            </select>
+            <label>视频标题</label>
+            <input v-model="title" type="text" class="form-input" placeholder="请输入视频标题" />
           </div>
 
           <!-- 可见性选择 -->
@@ -65,14 +58,13 @@
           </div>
 
           <!-- 描述输入 -->
-
           <div class="form-group">
-            <label>图片描述</label>
+            <label>视频描述</label>
             <textarea
               v-model="description"
               class="form-textarea"
               rows="3"
-              placeholder="请输入图片描述（可选）"
+              placeholder="请输入视频描述（可选）"
             ></textarea>
           </div>
         </div>
@@ -98,22 +90,29 @@
 
   const emit = defineEmits<{
     close: []
-    upload: [
-      { title: string; description: string; category: string; isPublic: boolean; file: File }
-    ]
+    upload: [{ title: string; description: string; isPublic: boolean; file: File }]
   }>()
 
   const fileInputRef = ref<HTMLInputElement | null>(null)
   const previewUrl = ref('')
   const fileData = ref<File | null>(null)
+  const fileName = ref('')
+  const fileSize = ref(0)
   const title = ref('')
   const description = ref('')
-  const category = ref('其他')
   const isPublic = ref(true)
   const uploading = ref(false)
 
+  const MAX_VIDEO_SIZE = 100 * 1024 * 1024 // 100MB
+
   const triggerFileInput = () => {
     fileInputRef.value?.click()
+  }
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + 'B'
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + 'KB'
+    return (bytes / (1024 * 1024)).toFixed(1) + 'MB'
   }
 
   const handleFileSelect = (e: Event) => {
@@ -121,17 +120,19 @@
     const file = target.files?.[0]
     if (!file) return
 
-    if (file.size > 5 * 1024 * 1024) {
-      alert('文件大小不能超过5MB')
+    if (file.size > MAX_VIDEO_SIZE) {
+      alert('文件大小不能超过 100MB')
       return
     }
 
-    if (!file.type.startsWith('image/')) {
-      alert('仅支持JPG/PNG/WebP格式')
+    if (!file.type.startsWith('video/')) {
+      alert('仅支持视频格式（MP4/WebM/OGG/MKV）')
       return
     }
 
     fileData.value = file
+    fileName.value = file.name
+    fileSize.value = file.size
     const reader = new FileReader()
     reader.onload = (event) => {
       previewUrl.value = event.target?.result as string
@@ -141,11 +142,11 @@
 
   const handleUpload = () => {
     if (!fileData.value) {
-      alert('请先选择图片')
+      alert('请先选择视频')
       return
     }
     if (!title.value) {
-      alert('请输入图片标题')
+      alert('请输入视频标题')
       return
     }
 
@@ -153,7 +154,6 @@
     emit('upload', {
       title: title.value,
       description: description.value,
-      category: category.value,
       isPublic: isPublic.value,
       file: fileData.value
     })
@@ -163,6 +163,8 @@
   const reset = () => {
     previewUrl.value = ''
     fileData.value = null
+    fileName.value = ''
+    fileSize.value = 0
     title.value = ''
     description.value = ''
     uploading.value = false
@@ -282,12 +284,32 @@
     text-align: center;
   }
 
-  .preview-img {
+  .preview-video {
     max-width: 100%;
-    max-height: 200px;
-    object-fit: contain;
+    max-height: 240px;
     border-radius: 0.5rem;
     margin-bottom: 0.5rem;
+    background: #000;
+  }
+
+  .file-info {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+  }
+
+  .file-name {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .file-size {
+    color: #9ca3af;
   }
 
   .change-btn {

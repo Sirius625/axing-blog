@@ -1,8 +1,8 @@
 /**
  * 网易云音乐 API 接口层
- * 
+ *
  * 封装所有网易云音乐 API 代理调用，提供推荐歌单、排行榜、歌曲播放、歌词、搜索等功能。
- * 
+ *
  * @module api/http
  */
 
@@ -73,5 +73,3 @@ export const getSearch = async (keywords: any, limit: number, type: number) => {
     data: result?.data || []
   }
 }
-
-

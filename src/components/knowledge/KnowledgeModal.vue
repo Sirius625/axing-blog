@@ -34,8 +34,13 @@
           <div class="modal-section">
             <h4><i class="fas fa-link"></i> 推荐资源</h4>
             <div class="resource-links">
-              <a v-for="(res, index) in item.resources" :key="index" :href="res.url"
-                target="_blank" class="resource-link">
+              <a
+                v-for="(res, index) in item.resources"
+                :key="index"
+                :href="res.url"
+                target="_blank"
+                class="resource-link"
+              >
                 <i :class="res.icon"></i>
                 <span>{{ res.name }}</span>
                 <i class="fas fa-external-link-alt"></i>
@@ -49,237 +54,237 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  item: {
-    id: number
-    title: string
-    description: string
-    category: string
-    icon: string
-    color: string
-    tags: string[]
-    points: string[]
-    resources: { name: string; url: string; icon: string }[]
-  } | null
-}>()
+  defineProps<{
+    item: {
+      id: number
+      title: string
+      description: string
+      category: string
+      icon: string
+      color: string
+      tags: string[]
+      points: string[]
+      resources: { name: string; url: string; icon: string }[]
+    } | null
+  }>()
 
-defineEmits<{
-  close: []
-}>()
+  defineEmits<{
+    close: []
+  }>()
 </script>
 
 <style scoped>
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
-}
-
-.modal-container {
-  background: #1a1a2e;
-  border-radius: 1rem;
-  width: 100%;
-  max-width: 560px;
-  max-height: 85vh;
-  overflow-y: auto;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.modal-header {
-  padding: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  color: white;
-}
-
-.modal-header-content {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.modal-header-content i {
-  font-size: 1.5rem;
-}
-
-.modal-header-content h2 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin: 0;
-}
-
-.modal-category {
-  font-size: 0.75rem;
-  opacity: 0.7;
-}
-
-.modal-close {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: white;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
-
-.modal-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.modal-body {
-  padding: 1.5rem;
-}
-
-.modal-description {
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
-  margin: 0 0 1.5rem;
-}
-
-.modal-section {
-  margin-bottom: 1.5rem;
-}
-
-.modal-section h4 {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin: 0 0 0.75rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.modal-section h4 i {
-  font-size: 0.75rem;
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.tag {
-  font-size: 0.7rem;
-  padding: 0.2rem 0.5rem;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 0.35rem;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.tag-lg {
-  font-size: 0.8rem;
-  padding: 0.3rem 0.75rem;
-}
-
-.knowledge-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.knowledge-list li {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.knowledge-list li:last-child {
-  border-bottom: none;
-}
-
-.knowledge-list li i {
-  color: #4ade80;
-  font-size: 0.85rem;
-}
-
-.resource-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.resource-link {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 0.5rem;
-  color: rgba(255, 255, 255, 0.7);
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.resource-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.resource-link span {
-  flex: 1;
-  font-size: 0.85rem;
-}
-
-.resource-link .fa-external-link-alt {
-  font-size: 0.7rem;
-  opacity: 0.4;
-}
-
-.modal-fade-enter-active,
-.modal-fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.modal-fade-enter-from,
-.modal-fade-leave-to {
-  opacity: 0;
-}
-
-.modal-container::-webkit-scrollbar {
-  width: 6px;
-}
-
-.modal-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.modal-container::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-}
-
-.modal-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-@media (max-width: 768px) {
-  .modal-container {
-    max-height: 90vh;
-    margin: 0.5rem;
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
   }
-}
+
+  .modal-container {
+    background: #1a1a2e;
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 560px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .modal-header {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    color: white;
+  }
+
+  .modal-header-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .modal-header-content i {
+    font-size: 1.5rem;
+  }
+
+  .modal-header-content h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .modal-category {
+    font-size: 0.75rem;
+    opacity: 0.7;
+  }
+
+  .modal-close {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+  }
+
+  .modal-description {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 1.5rem;
+  }
+
+  .modal-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-section h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .modal-section h4 i {
+    font-size: 0.75rem;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 0.35rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .tag-lg {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.75rem;
+  }
+
+  .knowledge-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .knowledge-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .knowledge-list li:last-child {
+    border-bottom: none;
+  }
+
+  .knowledge-list li i {
+    color: #4ade80;
+    font-size: 0.85rem;
+  }
+
+  .resource-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .resource-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .resource-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .resource-link span {
+    flex: 1;
+    font-size: 0.85rem;
+  }
+
+  .resource-link .fa-external-link-alt {
+    font-size: 0.7rem;
+    opacity: 0.4;
+  }
+
+  .modal-fade-enter-active,
+  .modal-fade-leave-active {
+    transition: opacity 0.3s ease;
+  }
+
+  .modal-fade-enter-from,
+  .modal-fade-leave-to {
+    opacity: 0;
+  }
+
+  .modal-container::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .modal-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .modal-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+  }
+
+  .modal-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  @media (max-width: 768px) {
+    .modal-container {
+      max-height: 90vh;
+      margin: 0.5rem;
+    }
+  }
 </style>
