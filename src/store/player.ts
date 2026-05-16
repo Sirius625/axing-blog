@@ -1,8 +1,18 @@
+/**
+ * 音乐播放器状态管理
+ * 
+ * 基于 Pinia 的音乐播放器核心逻辑，包含音频控制、播放队列管理、
+ * 歌词解析与同步、播放历史记录等功能。
+ * 
+ * @module store/player
+ */
+
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { getSongUrl, getLyric } from '@/api/http'
 import { addHistory, playSongCount } from '@/api/http1'
 
+/** 歌曲数据结构 */
 export interface Song {
   id: number
   name: string
@@ -11,39 +21,57 @@ export interface Song {
   dt: number
 }
 
+/** 歌词行数据结构 */
 export interface LyricLine {
-  time: number
-  text: string
+  time: number   // 时间点（秒）
+  text: string   // 歌词文本
 }
 
+/**
+ * 音乐播放器 Store
+ * 管理音频播放、播放队列、歌词同步等核心功能
+ */
 export const usePlayerStore = defineStore('player', () => {
-  // --- 音频实例 ---
+  // ==================== 音频实例 ====================
   const audioPlayer = new Audio()
   audioPlayer.volume = 0.8
 
-  // --- 状态 ---
+  // ==================== 状态 ====================
+  /** 当前播放的歌曲 */
   const currentSong = ref<Song | null>(null)
+  /** 是否正在播放 */
   const isPlaying = ref(false)
+  /** 当前播放进度（秒） */
   const currentTime = ref(0)
+  /** 歌曲总时长（秒） */
   const duration = ref(0)
+  /** 音量（0-1） */
   const volume = ref(0.8)
+  /** 歌词列表 */
   const lyrics = ref<LyricLine[]>([])
+  /** 当前歌词索引 */
   const currentLyricIndex = ref(-1)
+  /** 是否显示歌词弹窗 */
   const showLyricModal = ref(false)
-
-  // 播放队列
+  /** 播放队列 */
   const playQueue = ref<Song[]>([])
+  /** 当前队列索引 */
   const queueIndex = ref(0)
 
-  // --- 计算属性 ---
+  // ==================== 计算属性 ====================
+  /** 播放进度百分比 */
   const progressPercent = computed(() => {
     if (duration.value === 0) return 0
     return (currentTime.value / duration.value) * 100
   })
 
-  // --- 方法 ---
+  // ==================== 方法 ====================
 
-  // 设置播放队列
+  /**
+   * 设置播放队列并开始播放
+   * @param songs - 歌曲列表
+   * @param startIndex - 起始索引（默认0）
+   */
   const setPlayQueue = (songs: Song[], startIndex: number = 0) => {
     playQueue.value = songs
     queueIndex.value = startIndex
@@ -52,7 +80,11 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
-  // 播放歌曲
+  /**
+   * 播放指定歌曲
+   * 自动获取歌曲 URL、加载歌词、记录播放历史
+   * @param song - 要播放的歌曲
+   */
   const playSong = async (song: Song) => {
     const indexInQueue = playQueue.value.findIndex(s => s.id === song.id)
     if (indexInQueue !== -1) {
@@ -85,7 +117,10 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
-  // 获取歌词
+  /**
+   * 获取歌曲歌词
+   * @param id - 歌曲ID
+   */
   const fetchLyrics = async (id: number) => {
     try {
       const res = await getLyric(id)
@@ -98,7 +133,11 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
-  // 解析歌词
+  /**
+   * 解析 LRC 格式歌词字符串
+   * 将 "[mm:ss.xx]歌词内容" 格式解析为结构化数据
+   * @param lyricStr - LRC 格式歌词字符串
+   */
   const parseLyrics = (lyricStr: string) => {
     const lines = lyricStr.split('\n')
     const parsed: LyricLine[] = []
@@ -119,6 +158,7 @@ export const usePlayerStore = defineStore('player', () => {
     lyrics.value = parsed
   }
 
+  /** 切换播放/暂停 */
   const togglePlay = () => {
     if (!currentSong.value) return
     if (isPlaying.value) {
@@ -129,6 +169,7 @@ export const usePlayerStore = defineStore('player', () => {
     isPlaying.value = !isPlaying.value
   }
 
+  /** 播放上一首（循环播放） */
   const prevSong = () => {
     if (playQueue.value.length === 0) return
     let prevIndex = queueIndex.value - 1
@@ -139,6 +180,7 @@ export const usePlayerStore = defineStore('player', () => {
     playSong(playQueue.value[prevIndex])
   }
 
+  /** 播放下一首（循环播放） */
   const nextSong = () => {
     if (playQueue.value.length === 0) return
     let nextIndex = queueIndex.value + 1
@@ -149,11 +191,16 @@ export const usePlayerStore = defineStore('player', () => {
     playSong(playQueue.value[nextIndex])
   }
 
+  /**
+   * 跳转到指定时间点
+   * @param time - 目标时间（秒）
+   */
   const seekTo = (time: number) => {
     audioPlayer.currentTime = time
     currentTime.value = time
   }
 
+  /** 切换静音 */
   const toggleMute = () => {
     if (volume.value === 0) {
       volume.value = 0.8
@@ -164,17 +211,26 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
+  /**
+   * 设置音量
+   * @param vol - 音量值（0-100）
+   */
   const setVolume = (vol: number) => {
     volume.value = vol
     audioPlayer.volume = vol / 100
   }
 
+  /** 切换歌词弹窗显示 */
   const toggleLyricModal = () => {
     if (!currentSong.value) return
     showLyricModal.value = !showLyricModal.value
   }
 
-  // 初始化音频事件监听
+  /**
+   * 初始化音频事件监听
+   * 监听 timeupdate（更新进度和歌词同步）和 ended（自动下一首）事件
+   * @returns 清理函数，用于移除事件监听
+   */
   const initAudioListeners = () => {
     let rafId: number | null = null
 
@@ -185,6 +241,7 @@ export const usePlayerStore = defineStore('player', () => {
         currentTime.value = audioPlayer.currentTime
         duration.value = audioPlayer.duration || 0
 
+        // 歌词同步：找到当前时间对应的歌词行
         if (lyrics.value.length > 0) {
           const idx = lyrics.value.findIndex((l, i) => {
             const next = lyrics.value[i + 1]
@@ -212,7 +269,7 @@ export const usePlayerStore = defineStore('player', () => {
     }
   }
 
-  // 清理
+  /** 清理播放器（暂停并释放资源） */
   const destroy = () => {
     audioPlayer.pause()
     audioPlayer.src = ''

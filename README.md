@@ -82,38 +82,42 @@ VITE_MANAGE_API_BASE_URL=http://localhost:3030
 
 ```
 src/
-├── api/              # API 请求层
-│   ├── index.ts      # Axios 封装（管理后台 API）
-│   ├── http.ts       # 网易云音乐 API 接口
-│   └── http1.ts      # 管理后台 API 接口（文章、歌曲等）
-├── components/       # 公共组件
-│   ├── header-nav.vue          # 顶部导航栏
-│   ├── loginModel.vue          # 登录弹窗
-│   ├── ConfirmDialog.vue       # 确认对话框
-│   ├── home/                   # 首页组件
+├── api/                    # API 请求层
+│   ├── index.ts            # Axios 封装（双服务架构：音乐API + 管理后台API）
+│   ├── http.ts             # 网易云音乐 API 接口（推荐歌单、排行榜、搜索等）
+│   └── http1.ts            # 管理后台 API 接口（用户认证、歌曲管理、文章等）
+├── components/             # 公共组件
+│   ├── header-nav.vue      # 顶部导航栏
+│   ├── loginModel.vue      # 登录弹窗
+│   ├── ConfirmDialog.vue   # 确认对话框
+│   ├── home/               # 首页组件
 │   │   ├── ImageCard.vue       # 图片卡片
 │   │   ├── ImageUploadModal.vue # 图片上传弹窗
 │   │   └── ImagePreviewModal.vue # 图片预览弹窗
-│   ├── music/                  # 音乐组件
+│   ├── music/              # 音乐组件
 │   │   ├── MusicPlayer.vue     # 全局音乐播放器
 │   │   ├── MusicSidebar.vue    # 音乐侧边栏
 │   │   ├── MusicSearch.vue     # 音乐搜索
 │   │   ├── SongTable.vue       # 歌曲表格
 │   │   ├── PlaylistCard.vue    # 歌单卡片
 │   │   └── LyricModal.vue      # 歌词模态框
-│   └── knowledge/              # 知识体系组件
+│   └── knowledge/          # 知识体系组件
 │       ├── KnowledgeHeader.vue  # 知识体系头部
 │       ├── KnowledgeFilter.vue  # 知识体系筛选
 │       ├── KnowledgeCard.vue    # 知识卡片
 │       └── KnowledgeModal.vue   # 知识详情弹窗
-├── router/           # 路由配置
-├── store/            # Pinia 状态管理
-│   ├── index.ts      # 认证状态
-│   └── player.ts     # 音乐播放器状态
-├── views/            # 页面视图
-│   ├── home/         # 首页（图片画廊）
-│   ├── music/        # 音乐页面
-│   ├── knowledge/    # 知识体系页面
-│   └── blog/         # 博客文章页面
-└── style/            # 样式文件
+├── router/                 # 路由配置
+├── store/                  # Pinia 状态管理
+│   ├── index.ts            # 认证状态（useAuthStore）+ 系统设置（useSettingsStore）
+│   └── player.ts           # 音乐播放器状态（usePlayerStore）
+├── views/                  # 页面视图
+│   ├── home/               # 首页（图片画廊）
+│   ├── music/              # 音乐页面
+│   ├── knowledge/          # 知识体系页面
+│   └── blog/               # 博客文章页面
+└── style/                  # 样式文件
 ```
+
+## 后端依赖
+
+本项目的音乐功能依赖网易云音乐 API 代理服务（端口 3000），歌曲管理、用户认证、文章等功能依赖管理后台服务（端口 3030）。详见 [project-server](../project-server/README.md)。
