@@ -1,5 +1,5 @@
 <template>
-  <div class="knowledge-app pt-16">
+  <div class="knowledge-app">
     <!-- 顶部标题区 -->
     <KnowledgeHeader :totalItems="totalItems" :categoryCount="categories.length" />
 
@@ -879,8 +879,8 @@
 
 <style scoped>
   .knowledge-app {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100%;
+    background: linear-gradient(135deg, #1e1b4b, #312e81, #3730a3);
     color: #e0e0e0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     padding-bottom: 2rem;

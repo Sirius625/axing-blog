@@ -1,12 +1,50 @@
 <template>
-  <div class="player-bar">
+  <div :class="['player-bar', { 'player-mini': mini && !expanded, 'player-expanded': expanded }]">
+    <!-- 顶部进度条 -->
     <div class="player-progress-bar">
       <div class="progress-track" ref="progressRef" @click="seekTo">
         <div class="progress-fill" :style="{ width: progressPercent + '%' }"></div>
         <div class="progress-thumb" :style="{ left: progressPercent + '%' }"></div>
       </div>
     </div>
-    <div class="player-inner">
+
+    <!-- 迷你模式（折叠态） -->
+    <div v-if="mini && !expanded" class="mini-player" @click="expanded = true">
+      <div class="mini-left">
+        <template v-if="currentSong">
+          <div class="cover-wrapper">
+            <img
+              :src="currentSong.al?.picUrl || 'https://picsum.photos/50'"
+              class="player-cover"
+              :class="{ playing: isPlaying }"
+            />
+          </div>
+          <div class="player-song-info">
+            <p class="player-song-name">{{ currentSong.name }}</p>
+            <p class="player-song-artist">{{ currentSong.ar?.[0]?.name || '-未知' }}</p>
+          </div>
+        </template>
+        <template v-else>
+          <div class="player-empty-info">
+            <div class="empty-icon-wrap">
+              <i class="fas fa-music"></i>
+            </div>
+            <span class="empty-text">选择一首歌曲开始播放</span>
+          </div>
+        </template>
+      </div>
+      <div class="mini-right" @click.stop>
+        <button class="control-btn play-btn" @click="$emit('togglePlay')" :title="isPlaying ? '暂停' : '播放'">
+          <i :class="isPlaying ? 'fas fa-pause' : 'fas fa-play'"></i>
+        </button>
+        <button class="control-btn expand-btn" @click.stop="expanded = true">
+          <i class="fas fa-chevron-up"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- 完整模式（默认或展开） -->
+    <div v-else class="player-inner">
       <!-- 左侧歌曲信息 -->
       <div class="player-left">
         <template v-if="currentSong">
@@ -81,6 +119,10 @@
             <div class="volume-thumb" :style="{ left: volume + '%' }"></div>
           </div>
         </div>
+        <!-- 迷你模式下展开后的折叠按钮 -->
+        <button v-if="mini" class="control-btn collapse-btn" @click="expanded = false" title="折叠">
+          <i class="fas fa-chevron-down"></i>
+        </button>
       </div>
     </div>
   </div>
@@ -97,6 +139,7 @@
     currentTime: number
     duration: number
     volume: number
+    mini?: boolean
   }>()
 
   const emit = defineEmits<{
@@ -109,6 +152,8 @@
     seek: [time: number]
     setVolume: [volume: number]
   }>()
+
+  const expanded = ref(false)
 
   const progressPercent = computed(() => {
     if (props.duration === 0) return 0
@@ -179,6 +224,117 @@
     padding: 0 1.5rem;
     touch-action: none;
     overflow: visible;
+    transition: height 0.3s ease;
+  }
+
+  /* ========== 迷你模式 ========== */
+  .player-mini {
+    height: 3.5rem;
+    padding: 0 0.75rem;
+    cursor: pointer;
+    background: rgba(10, 8, 30, 0.95);
+    border-top: 1px solid rgba(168, 85, 247, 0.15);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .player-mini .player-progress-bar {
+    top: -2px;
+    height: 2px;
+  }
+
+  .player-mini .progress-track {
+    height: 2px;
+  }
+
+  .player-mini:hover .progress-track {
+    height: 3px;
+  }
+
+  .player-mini .progress-thumb {
+    display: none;
+  }
+
+  .mini-player {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    gap: 0.5rem;
+  }
+
+  .mini-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .mini-left .cover-wrapper {
+    flex-shrink: 0;
+  }
+
+  .mini-left .player-cover {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 0.4rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .mini-left .player-cover.playing {
+    animation: spin 6s linear infinite;
+    border-radius: 50%;
+  }
+
+  .mini-left .player-song-info {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .mini-left .player-song-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 100%;
+  }
+
+  .mini-left .player-song-artist {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 0.05rem;
+    max-width: 100%;
+  }
+
+  .mini-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .mini-right .play-btn {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.75rem;
+    background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+    color: white;
+    box-shadow: 0 2px 10px rgba(168, 85, 247, 0.3);
+  }
+
+  .expand-btn {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.35);
+    padding: 0.2rem;
+  }
+
+  .expand-btn:hover {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* ========== 展开模式 ========== */
+  .player-expanded {
+    height: 5.5rem;
+    padding: 0 1.5rem;
   }
 
   /* ========== 顶部进度条 ========== */
@@ -473,6 +629,15 @@
     font-size: 1rem;
   }
 
+  .collapse-btn {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  .collapse-btn:hover {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
   .volume-control {
     display: flex;
     align-items: center;
@@ -526,6 +691,16 @@
       background: rgba(10, 8, 30, 0.97);
       border-top: 1px solid rgba(168, 85, 247, 0.15);
       box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .player-mini {
+      height: 3rem;
+      padding: 0 0.5rem;
+    }
+
+    .player-expanded {
+      height: 4.5rem;
+      padding: 0 0.5rem;
     }
 
     .player-progress-bar {
@@ -698,6 +873,30 @@
 
     .volume-control .control-btn {
       font-size: 0.85rem;
+    }
+
+    /* 迷你模式移动端 */
+    .mini-left .player-cover {
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+
+    .mini-left .player-song-name {
+      font-size: 0.7rem;
+    }
+
+    .mini-left .player-song-artist {
+      display: none;
+    }
+
+    .mini-right .play-btn {
+      width: 1.8rem;
+      height: 1.8rem;
+      font-size: 0.65rem;
+    }
+
+    .expand-btn {
+      font-size: 0.7rem;
     }
   }
 </style>

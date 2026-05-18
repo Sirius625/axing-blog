@@ -245,12 +245,17 @@
                     <i class="fa-solid fa-eye"></i> 预览
                   </button>
                 </div>
-                <textarea
-                  v-if="editorTab === 'write'"
-                  v-model="editorForm.content"
-                  placeholder="支持 Markdown 语法&#10;&#10;# 标题&#10;## 二级标题&#10;**粗体** *斜体*&#10;- 列表项&#10;1. 有序列表&#10;`代码`&#10;```代码块```"
-                  class="form-input editor-textarea"
-                ></textarea>
+                <div class="textarea-wrapper" v-if="editorTab === 'write'">
+                  <textarea
+                    v-model="editorForm.content"
+                    placeholder="支持 Markdown 语法&#10;&#10;# 标题&#10;## 二级标题&#10;**粗体** *斜体*&#10;- 列表项&#10;1. 有序列表&#10;`代码`&#10;```代码块```"
+                    class="form-input editor-textarea"
+                    maxlength="2000"
+                  ></textarea>
+                  <span class="word-count" :class="{ 'word-limit': editorForm.content.length >= 2000 }">
+                    {{ editorForm.content.length }}/2000
+                  </span>
+                </div>
                 <div
                   v-else
                   class="preview-area markdown-body"
@@ -417,8 +422,7 @@
       if (detail) {
         detailArticle.value = detail
         document.body.style.overflow = 'hidden'
-        document.body.style.position = 'fixed'
-        document.body.style.width = '100%'
+        document.body.style.touchAction = 'none'
       }
     } catch (err) {
       console.error('获取文章详情失败:', err)
@@ -428,8 +432,7 @@
   const closeDetail = () => {
     detailArticle.value = null
     document.body.style.overflow = ''
-    document.body.style.position = ''
-    document.body.style.width = ''
+    document.body.style.touchAction = ''
   }
 
   // 点赞
@@ -447,12 +450,13 @@
 
   // 删除
   const handleDelete = async (id: number) => {
+    console.log('准备删除文章 ID:', id)
     try {
       const confirmed = await msg.confirm({
         title: '确认删除',
-        message: '确定要删除这篇文章吗？',
+        message: '确定要删除这篇文章吗？此操作不可恢复。',
         type: 'warning',
-        confirmText: '确定',
+        confirmText: '确定删除',
         cancelText: '取消'
       })
       if (!confirmed) return
@@ -496,16 +500,14 @@
     editorTab.value = 'write'
     showEditor.value = true
     document.body.style.overflow = 'hidden'
-    document.body.style.position = 'fixed'
-    document.body.style.width = '100%'
+    document.body.style.touchAction = 'none'
   }
 
   const closeEditor = () => {
     showEditor.value = false
     editingArticle.value = null
     document.body.style.overflow = ''
-    document.body.style.position = ''
-    document.body.style.width = ''
+    document.body.style.touchAction = ''
   }
 
   const submitArticle = async () => {
@@ -553,11 +555,11 @@
 <style scoped>
   /* ===== 全局 ===== */
   .blog-app {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100%;
+    background: linear-gradient(135deg, #1e1b4b, #312e81, #3730a3);
     color: #e0e0e0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    padding-bottom: 3rem;
+    padding-bottom: 0;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
   }
@@ -1192,12 +1194,34 @@
     min-height: 50px;
   }
 
+  .textarea-wrapper {
+    position: relative;
+    padding-bottom: 2rem;
+  }
+
   .editor-textarea {
     min-height: 350px;
     font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
     line-height: 1.6;
     font-size: 0.9rem;
     resize: vertical;
+  }
+
+  .word-count {
+    position: absolute;
+    bottom: 0.25rem;
+    right: 0.75rem;
+    font-size: 0.75rem;
+    color: #64748b;
+    pointer-events: none;
+    background: rgba(30, 41, 59, 0.85);
+    padding: 2px 8px;
+    border-radius: 4px;
+    z-index: 1;
+  }
+
+  .word-count.word-limit {
+    color: #ef4444;
   }
 
   .editor-tabs {

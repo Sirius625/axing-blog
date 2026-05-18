@@ -128,9 +128,7 @@
     right: 0;
     z-index: 1000;
     max-width: 100%;
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: #0f172a;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     transition: all 0.3s ease;
   }

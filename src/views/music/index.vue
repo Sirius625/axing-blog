@@ -1,45 +1,44 @@
 <template>
   <div
     class="flex flex-col md:flex-row min-h-screen text-gray-200 font-sans overflow-x-hidden selection:bg-purple-500 selection:text-white"
-    style="background: linear-gradient(135deg, #0f0c29, #302b63, #24243e)"
+    style="background: linear-gradient(135deg, #1e1b4b, #312e81, #3730a3)"
   >
-    <!-- 移动端底部导航 Tab -->
-    <div
-      :class="[
-        'fixed left-0 right-0 z-40 flex md:hidden bg-[#1a1a2e]/95 backdrop-blur-xl border-t border-white/10',
-        playerStore.currentSong ? 'bottom-[5.5rem]' : 'bottom-0'
-      ]"
-      style="touch-action: none"
-    >
-      <button
-        v-for="tab in mobileTabs"
-        :key="tab.id"
-        @click="switchTab(tab.id)"
-        :class="activeTab === tab.id ? 'text-purple-400 bg-purple-500/10' : 'text-white/50'"
-        class="flex-1 flex flex-col items-center py-2 text-xs transition-colors"
-      >
-        <i :class="tab.icon" class="text-lg mb-0.5"></i>
-        <span>{{ tab.label }}</span>
-      </button>
-    </div>
-
     <!-- 侧边栏 -->
     <MusicSidebar :activeTab="activeTab" :likedCount="likedSongs.length" @switchTab="switchTab" />
 
     <!-- 主内容区 -->
     <main class="flex-1 flex flex-col relative overflow-hidden bg-transparent music-main">
-      <!-- 顶部搜索栏 -->
-      <MusicSearch
-        v-model="searchQuery"
-        :history="searchHistory"
-        @search="handleSearch"
-        @clearHistory="clearSearchHistory"
-        @removeHistory="removeSearchHistory"
-      />
+      <!-- 移动端顶部导航 Tab -->
+      <div
+        class="flex md:hidden sticky top-0 z-30 px-2 pt-1"
+        style="touch-action: none; background: transparent;"
+      >
+        <button
+          v-for="tab in mobileTabs"
+          :key="tab.id"
+          @click="switchTab(tab.id)"
+          :class="activeTab === tab.id ? 'text-purple-300 bg-white/10 shadow-lg shadow-purple-500/10' : 'text-white/40 hover:text-white/70'"
+          class="flex-1 flex flex-col items-center py-2.5 mx-1 rounded-xl text-xs font-medium transition-all duration-300"
+        >
+          <i :class="tab.icon" class="text-base mb-1"></i>
+          <span class="tracking-wide">{{ tab.label }}</span>
+        </button>
+      </div>
+
+      <!-- 顶部搜索栏（桌面端始终显示，移动端仅在搜索 Tab 显示） -->
+      <div :class="['md:block', activeTab === 'search' ? 'block' : 'hidden md:block']">
+        <MusicSearch
+          v-model="searchQuery"
+          :history="searchHistory"
+          @search="handleSearch"
+          @clearHistory="clearSearchHistory"
+          @removeHistory="removeSearchHistory"
+        />
+      </div>
 
       <!-- 内容滚动区域 -->
       <div
-        class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 pb-48 md:pb-36"
+        class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 pb-36 md:pb-36"
         ref="scrollContainer"
       >
         <!-- 加载状态 -->

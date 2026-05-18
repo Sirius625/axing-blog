@@ -60,12 +60,18 @@
           <!-- 描述输入 -->
           <div class="form-group">
             <label>视频描述</label>
-            <textarea
-              v-model="description"
-              class="form-textarea"
-              rows="3"
-              placeholder="请输入视频描述（可选）"
-            ></textarea>
+            <div class="textarea-wrapper">
+              <textarea
+                v-model="description"
+                class="form-textarea"
+                rows="5"
+                maxlength="200"
+                placeholder="请输入视频描述（可选）"
+              ></textarea>
+              <span class="word-count" :class="{ 'word-limit': description.length >= 200 }">
+                {{ description.length }}/200
+              </span>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -196,7 +202,7 @@
   }
 
   .modal-container {
-    background-color: var(--card-bg);
+    background-color: #fff;
     border-radius: 1rem;
     box-shadow: var(--shadow-lg);
     width: 100%;
@@ -333,6 +339,11 @@
     margin-bottom: 0.25rem;
   }
 
+  .textarea-wrapper {
+    position: relative;
+    padding-bottom: 1.75rem;
+  }
+
   .form-input,
   .form-textarea {
     width: 100%;
@@ -349,6 +360,19 @@
   .form-textarea:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+  }
+
+  .word-count {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.75rem;
+    font-size: 0.75rem;
+    color: #9ca3af;
+    pointer-events: none;
+  }
+
+  .word-count.word-limit {
+    color: #ef4444;
   }
 
   .radio-group {

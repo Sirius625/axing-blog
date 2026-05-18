@@ -627,8 +627,8 @@
     --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.4);
     --radius: 0.75rem;
 
-    min-height: 100vh;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100%;
+    background: linear-gradient(135deg, #1e1b4b, #312e81, #3730a3);
     color: var(--text-color);
     font-family:
       -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -642,23 +642,23 @@
     --text-color: #e0e0e0;
     --card-bg: rgba(255, 255, 255, 0.08);
     --border-color: rgba(255, 255, 255, 0.15);
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    background: linear-gradient(135deg, #1e1b4b, #312e81, #3730a3);
   }
 
   /* 头部样式 */
   .app-header {
-    background-color: var(--card-bg);
-    box-shadow: var(--shadow-sm);
+    background: transparent;
     position: sticky;
     top: 0;
     z-index: 40;
-    border-bottom: 1px solid var(--border-color);
-    backdrop-filter: blur(10px);
-    background-color: rgba(15, 23, 42, 0.85);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
   .dark-mode .app-header {
-    background-color: rgba(15, 23, 42, 0.85);
+    background: transparent;
+    border-bottom-color: rgba(255, 255, 255, 0.06);
   }
 
   .header-content {
@@ -776,21 +776,21 @@
   .tab-bar {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 1rem 2rem 0;
+    gap: 0.25rem;
+    padding: 0.5rem 2rem 0;
     background-color: transparent;
   }
 
   .tab-btn {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1.5rem;
+    gap: 0.35rem;
+    padding: 0.4rem 1.2rem;
     border: 1px solid var(--border-color);
-    border-radius: 0.5rem 0.5rem 0 0;
+    border-radius: 0.4rem 0.4rem 0 0;
     background-color: rgba(255, 255, 255, 0.05);
     color: #9ca3af;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
@@ -810,17 +810,18 @@
   }
 
   .tab-btn i {
-    font-size: 1rem;
+    font-size: 0.85rem;
   }
 
   @media (max-width: 768px) {
     .tab-bar {
-      padding: 0.75rem 0.75rem 0;
+      padding: 0.35rem 0.75rem 0;
+      gap: 0.2rem;
     }
 
     .tab-btn {
-      padding: 0.5rem 1rem;
-      font-size: 0.85rem;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
     }
 
     .tab-btn span {

@@ -1,6 +1,11 @@
 <template>
   <headerNav @open-login="showLoginModal = true"></headerNav>
-  <main class="workspace">
+  <main
+    class="workspace"
+    :style="{
+      paddingBottom: playerStore.currentSong ? (isMusicPage ? '4rem' : '3rem') : '0'
+    }"
+  >
     <router-view />
   </main>
   <loginModel
@@ -19,6 +24,7 @@
     :currentTime="playerStore.currentTime"
     :duration="playerStore.duration"
     :volume="playerStore.volume * 100"
+    :mini="!isMusicPage"
     @togglePlay="playerStore.togglePlay"
     @prev="playerStore.prevSong"
     @next="playerStore.nextSong"
@@ -43,20 +49,25 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, onUnmounted, defineAsyncComponent } from 'vue'
+  import { ref, computed, onMounted, onUnmounted, nextTick, defineAsyncComponent } from 'vue'
+  import { useRoute } from 'vue-router'
   import headerNav from './components/header-nav.vue'
   import loginModel from './components/loginModel.vue'
+  import MessageModal from './components/MessageModal.vue'
   import { usePlayerStore } from './store/player'
   import { setMessageInstance } from './composables/useMessage'
 
   // 非首屏必需组件 - 动态导入
   const MusicPlayer = defineAsyncComponent(() => import('./components/music/MusicPlayer.vue'))
   const LyricModal = defineAsyncComponent(() => import('./components/music/LyricModal.vue'))
-  const MessageModal = defineAsyncComponent(() => import('./components/MessageModal.vue'))
 
+  const route = useRoute()
   const playerStore = usePlayerStore()
 
   const showLoginModal = ref(false)
+
+  // 非音乐页面时显示迷你播放器
+  const isMusicPage = computed(() => route.path === '/music')
 
   const handleLoginSuccess = () => {
     showLoginModal.value = false
@@ -91,6 +102,7 @@
   .workspace {
     padding-top: 64px;
     min-height: 100vh;
+    box-sizing: border-box;
   }
 
   @media (max-width: 768px) {
