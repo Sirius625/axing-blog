@@ -327,7 +327,7 @@
 
   /* 弹窗容器 */
   .modal-container {
-    background: white;
+    background: #ffffff;
     width: 90%;
     max-width: 400px;
     border-radius: 12px;
@@ -339,7 +339,7 @@
   /* 头部 */
   .modal-header {
     padding: 20px 24px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #e5e7eb;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -348,7 +348,7 @@
   .modal-header h2 {
     margin: 0;
     font-size: 1.25rem;
-    color: #333;
+    color: #1f2937;
   }
 
   .close-btn {
@@ -356,12 +356,12 @@
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: #999;
+    color: #9ca3af;
     transition: color 0.2s;
   }
 
   .close-btn:hover {
-    color: #333;
+    color: #374151;
   }
 
   /* 表单主体 */
@@ -377,24 +377,26 @@
     display: block;
     margin-bottom: 6px;
     font-size: 0.9rem;
-    color: #555;
+    color: #4b5563;
     font-weight: 500;
   }
 
   .form-group input {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid #ddd;
+    border: 1px solid #d1d5db;
     border-radius: 6px;
     font-size: 1rem;
     transition: all 0.2s;
     box-sizing: border-box;
+    background: #ffffff;
+    color: #1f2937;
   }
 
   .form-group input:focus {
-    border-color: #409eff;
+    border-color: #6366f1;
     outline: none;
-    box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
   }
 
   .error-border {
@@ -422,7 +424,7 @@
     align-items: center;
     cursor: pointer;
     user-select: none;
-    color: #666;
+    color: #6b7280;
   }
 
   .checkbox-container input {
@@ -477,10 +479,10 @@
   /* 底部 */
   .modal-footer {
     padding: 16px 24px;
-    background-color: #f9f9f9;
+    background-color: #f9fafb;
     text-align: center;
     font-size: 0.9rem;
-    color: #666;
+    color: #6b7280;
   }
 
   .modal-footer a {

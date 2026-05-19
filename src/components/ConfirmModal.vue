@@ -94,10 +94,10 @@
   }
 
   .confirm-box {
-    background: #1e293b;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
     border-radius: 12px;
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
     width: 380px;
     max-width: 90vw;
     overflow: hidden;
@@ -116,7 +116,7 @@
     margin: 0;
     font-size: 17px;
     font-weight: 600;
-    color: #f1f5f9;
+    color: #1f2937;
   }
 
   .confirm-body {
@@ -126,7 +126,7 @@
   .confirm-body p {
     margin: 0;
     font-size: 14px;
-    color: #94a3b8;
+    color: #6b7280;
     line-height: 1.6;
   }
 
@@ -153,13 +153,13 @@
   }
 
   .confirm-btn--cancel {
-    background: rgba(255, 255, 255, 0.06);
-    color: #94a3b8;
+    background: #f3f4f6;
+    color: #6b7280;
   }
 
   .confirm-btn--cancel:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #e2e8f0;
+    background: #e5e7eb;
+    color: #374151;
   }
 
   .confirm-btn--ok {

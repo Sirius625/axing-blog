@@ -3,7 +3,7 @@
     <div class="flex items-center gap-4 flex-1 max-w-2xl relative">
       <div class="relative w-full group">
         <i
-          class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-purple-400 transition-colors"
+          class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-purple-500 transition-colors"
         ></i>
         <input
           ref="searchInputRef"
@@ -13,19 +13,19 @@
           @blur="handleBlur"
           type="text"
           placeholder="搜索音乐、歌手、歌词..."
-          class="w-full pl-12 pr-10 py-2.5 bg-white/10 border border-white/10 rounded-full text-sm focus:bg-white/15 focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 outline-none transition-all duration-300 placeholder-white/30 text-white"
+          class="w-full pl-12 pr-10 py-2.5 bg-white border border-gray-200 rounded-full text-sm focus:bg-white focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 outline-none transition-all duration-300 placeholder-gray-400 text-gray-800"
         />
         <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
           <button
             v-if="query"
             @click="clearQuery"
-            class="w-7 h-7 flex items-center justify-center text-white/40 hover:text-white/70 transition-colors"
+            class="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-gray-300 transition-colors"
           >
             <i class="fas fa-times-circle"></i>
           </button>
           <button
             @click="$emit('search', query)"
-            class="w-7 h-7 flex items-center justify-center text-white/40 hover:text-purple-400 transition-colors"
+            class="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-purple-600 transition-colors"
             title="搜索"
           >
             <i class="fas fa-arrow-right"></i>
@@ -36,13 +36,13 @@
       <!-- 搜索历史下拉框 -->
       <div
         v-if="showHistory && history.length > 0"
-        class="absolute top-full left-0 right-0 mt-2 bg-[#1a1a2e] rounded-xl shadow-xl border border-white/10 py-2 z-50 animate-fade-in-down"
+        class="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50 animate-fade-in-down"
       >
         <div
-          class="px-4 py-2 text-xs font-semibold text-white/40 flex justify-between items-center"
+          class="px-4 py-2 text-xs font-semibold text-gray-500 flex justify-between items-center"
         >
           <span>搜索历史</span>
-          <button @click="$emit('clearHistory')" class="hover:text-purple-400 transition-colors">
+          <button @click="$emit('clearHistory')" class="hover:text-purple-600 transition-colors">
             <i class="fas fa-trash-alt"></i>
           </button>
         </div>
@@ -51,15 +51,15 @@
             v-for="(item, index) in history"
             :key="index"
             @mousedown="selectHistory(item)"
-            class="px-4 py-2.5 hover:bg-white/5 cursor-pointer flex items-center justify-between group transition-colors"
+            class="px-4 py-2.5 hover:bg-gray-50 cursor-pointer flex items-center justify-between group transition-colors"
           >
-            <div class="flex items-center gap-3 text-sm text-white/70">
-              <i class="fas fa-history text-white/30 group-hover:text-purple-400"></i>
+            <div class="flex items-center gap-3 text-sm text-gray-600">
+              <i class="fas fa-history text-gray-400 group-hover:text-purple-600"></i>
               <span>{{ item }}</span>
             </div>
             <button
               @mousedown.stop="$emit('removeHistory', index)"
-              class="text-white/30 hover:text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity"
+              class="text-gray-400 hover:text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity"
             >
               <i class="fas fa-times"></i>
             </button>
@@ -69,7 +69,7 @@
     </div>
     <div class="flex items-center gap-3">
       <button
-        class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors text-white/60"
+        class="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors text-gray-500"
       >
         <i class="fas fa-cog"></i>
       </button>
@@ -117,9 +117,9 @@
 <style scoped>
   .search-header {
     height: 4rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: #ffffff;
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid #e5e7eb;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -136,7 +136,7 @@
     background: transparent;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: #d1d5db;
     border-radius: 2px;
   }
 

@@ -87,14 +87,14 @@
   }
 
   .modal-container {
-    background: #1a1a2e;
+    background: #ffffff;
     border-radius: 1rem;
     width: 100%;
     max-width: 560px;
     max-height: 85vh;
     overflow-y: auto;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e5e7eb;
   }
 
   .modal-header {
@@ -151,7 +151,7 @@
   .modal-description {
     font-size: 0.9rem;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.7);
+    color: #6b7280;
     margin: 0 0 1.5rem;
   }
 
@@ -162,7 +162,7 @@
   .modal-section h4 {
     font-size: 0.85rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    color: #374151;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin: 0 0 0.75rem;
@@ -184,9 +184,9 @@
   .tag {
     font-size: 0.7rem;
     padding: 0.2rem 0.5rem;
-    background: rgba(255, 255, 255, 0.08);
+    background: #f3f4f6;
     border-radius: 0.35rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: #6b7280;
   }
 
   .tag-lg {
@@ -206,8 +206,8 @@
     gap: 0.75rem;
     padding: 0.5rem 0;
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #374151;
+    border-bottom: 1px solid #e5e7eb;
   }
 
   .knowledge-list li:last-child {
@@ -230,18 +230,18 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
     border-radius: 0.5rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: #6b7280;
     text-decoration: none;
     transition: all 0.2s;
   }
 
   .resource-link:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border-color: rgba(255, 255, 255, 0.15);
+    background: #f3f4f6;
+    color: #374151;
+    border-color: #d1d5db;
   }
 
   .resource-link span {
@@ -273,12 +273,12 @@
   }
 
   .modal-container::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: #d1d5db;
     border-radius: 3px;
   }
 
   .modal-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: #9ca3af;
   }
 
   @media (max-width: 768px) {

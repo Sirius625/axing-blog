@@ -12,11 +12,11 @@
       </div>
       <div class="header-stats">
         <div class="stat-item">
-          <span class="stat-number">{{ totalItems }}</span>
+          <span class="stat-value">{{ totalItems }}</span>
           <span class="stat-label">知识点</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number">{{ categoryCount }}</span>
+          <span class="stat-value">{{ categoryCount }}</span>
           <span class="stat-label">分类</span>
         </div>
       </div>
@@ -33,13 +33,15 @@
 
 <style scoped>
   .knowledge-header {
-    background: rgba(255, 255, 255, 0.05);
+    background: #ffffff;
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid #e5e7eb;
     padding: 2rem 0;
   }
 
   .knowledge-header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 0 2rem;
     display: flex;
     justify-content: space-between;
@@ -70,12 +72,12 @@
   .header-content h1 {
     font-size: 1.75rem;
     font-weight: 700;
-    color: white;
+    color: #1f2937;
     margin: 0;
   }
 
   .header-subtitle {
-    color: rgba(255, 255, 255, 0.5);
+    color: #6b7280;
     font-size: 0.875rem;
     margin: 0.25rem 0 0;
     letter-spacing: 0.05em;
@@ -90,28 +92,26 @@
     text-align: center;
   }
 
-  .stat-number {
+  .stat-value {
     display: block;
     font-size: 1.5rem;
     font-weight: 700;
-    color: white;
+    color: #1f2937;
   }
 
   .stat-label {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: #6b7280;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
   @media (max-width: 768px) {
     .knowledge-header {
-      padding: 1rem 1rem;
-      flex-direction: column;
-      align-items: flex-start;
+      padding: 1rem 0;
     }
-    .knowledge-header-inner{
-      padding: 0 0.5rem;
+    .knowledge-header-inner {
+      padding: 0 1rem;
     }
     .header-stats {
       width: 100%;

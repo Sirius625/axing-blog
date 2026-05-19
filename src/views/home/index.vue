@@ -615,17 +615,17 @@
   .gallery-app {
     --primary-color: #667eea;
     --primary-hover: #5a6fd6;
-    --bg-color: transparent;
-    --text-color: #e0e0e0;
-    --card-bg: rgba(255, 255, 255, 0.05);
-    --border-color: rgba(255, 255, 255, 0.1);
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.4);
+    --bg-color: #f5f5f7;
+    --text-color: #333;
+    --card-bg: #ffffff;
+    --border-color: #e5e5e5;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
     --radius: 0.75rem;
 
     min-height: 100%;
-    background: linear-gradient(135deg, #1e1b4b, #312e81, #3730a3);
+    background: #f5f5f7;
     color: var(--text-color);
     font-family:
       -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -635,26 +635,26 @@
   }
 
   .gallery-app.dark-mode {
-    --bg-color: transparent;
+    --bg-color: #1a1a2e;
     --text-color: #e0e0e0;
     --card-bg: rgba(255, 255, 255, 0.08);
     --border-color: rgba(255, 255, 255, 0.15);
-    background: linear-gradient(135deg, #1e1b4b, #312e81, #3730a3);
+    background: #1a1a2e;
   }
 
   /* 头部样式 */
   .app-header {
-    background: transparent;
+    background: rgba(255, 255, 255, 0.85);
     position: sticky;
     top: 0;
     z-index: 40;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(229, 231, 235, 0.5);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
 
   .dark-mode .app-header {
-    background: transparent;
+    background: rgba(26, 26, 46, 0.85);
     border-bottom-color: rgba(255, 255, 255, 0.06);
   }
 
@@ -810,7 +810,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
     background-color: var(--card-bg);
     padding: 1rem;
     border-radius: var(--radius);
@@ -1079,23 +1079,32 @@
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    background-color: #1f2937;
-    color: white;
+    background-color: #ffffff;
+    color: #374151;
     padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    box-shadow: var(--shadow-lg);
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
     display: flex;
     align-items: center;
     gap: 0.75rem;
     z-index: 60;
+    border: 1px solid #e5e7eb;
+    font-size: 0.9rem;
+    font-weight: 500;
   }
 
   .toast.success i {
-    color: #4ade80;
+    color: #10b981;
   }
 
   .toast.info i {
-    color: #60a5fa;
+    color: #3b82f6;
+  }
+
+  .dark-mode .toast {
+    background-color: #1f2937;
+    color: #f3f4f6;
+    border-color: #374151;
   }
 
   /* 动画 */

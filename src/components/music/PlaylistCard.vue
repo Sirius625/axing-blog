@@ -101,13 +101,13 @@
   }
 
   .card-info {
-    padding: 0.75rem 0;
+    padding: 0.75rem 0 0 0;
   }
 
   .card-title {
     font-size: 0.9rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(0, 0, 0, 0.9);
     margin: 0 0 0.25rem;
     white-space: nowrap;
     overflow: hidden;
@@ -116,7 +116,7 @@
 
   .card-desc {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(0, 0, 0, 0.4);
     margin: 0;
     white-space: nowrap;
     overflow: hidden;

@@ -276,7 +276,7 @@
 
   /* ==================== Confirm 弹窗 ==================== */
   .confirm-box {
-    background: #fff;
+    background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
     width: 400px;
@@ -297,7 +297,7 @@
     margin: 0;
     font-size: 17px;
     font-weight: 600;
-    color: #1e293b;
+    color: #1f2937;
   }
 
   .confirm-body {
@@ -307,7 +307,7 @@
   .confirm-body p {
     margin: 0;
     font-size: 14px;
-    color: #64748b;
+    color: #6b7280;
     line-height: 1.6;
   }
 
@@ -334,12 +334,13 @@
   }
 
   .confirm-btn--cancel {
-    background: #f1f5f9;
-    color: #475569;
+    background: #f3f4f6;
+    color: #6b7280;
   }
 
   .confirm-btn--cancel:hover {
-    background: #e2e8f0;
+    background: #e5e7eb;
+    color: #374151;
   }
 
   .confirm-btn--ok {

@@ -128,8 +128,8 @@
     right: 0;
     z-index: 1000;
     max-width: 100%;
-    background: #0f172a;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
     transition: all 0.3s ease;
   }
 
@@ -168,13 +168,13 @@
   .logo-text {
     font-size: 22px;
     font-weight: 700;
-    color: #f1f5f9;
+    color: #1f2937;
     margin: 0;
     letter-spacing: 1px;
   }
 
   .logo-accent {
-    color: #818cf8;
+    color: #7c3aed;
     font-weight: 300;
   }
 
@@ -193,7 +193,7 @@
     padding: 8px 18px;
     border-radius: 10px;
     text-decoration: none;
-    color: #94a3b8;
+    color: #4b5563;
     font-size: 15px;
     font-weight: 500;
     transition: all 0.25s ease;
@@ -202,25 +202,27 @@
 
   .nav-link-icon {
     font-size: 14px;
+    color: #4b5563;
     transition: transform 0.25s ease;
   }
 
   .nav-link:hover {
-    color: #e2e8f0;
-    background: rgba(255, 255, 255, 0.06);
+    color: #1f2937;
+    background: rgba(0, 0, 0, 0.05);
   }
 
   .nav-link:hover .nav-link-icon {
+    color: #1f2937;
     transform: translateY(-1px);
   }
 
   .nav-link--active {
-    color: #818cf8 !important;
-    background: rgba(99, 102, 241, 0.1);
+    color: #7c3aed !important;
+    background: rgba(99, 102, 241, 0.08);
   }
 
   .nav-link--active .nav-link-icon {
-    color: #818cf8;
+    color: #7c3aed;
   }
 
   .nav-link-indicator {
@@ -250,29 +252,29 @@
     align-items: center;
     gap: 8px;
     padding: 6px 14px 6px 6px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid #d1d5db;
     border-radius: 100px;
-    background: rgba(255, 255, 255, 0.04);
-    color: #94a3b8;
+    background: rgba(0, 0, 0, 0.03);
+    color: #4b5563;
     cursor: pointer;
     transition: all 0.25s ease;
     font-size: 14px;
   }
 
   .user-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: #e2e8f0;
+    background: rgba(0, 0, 0, 0.06);
+    border-color: #9ca3af;
+    color: #1f2937;
   }
 
   .user-btn--logged {
     border-color: rgba(99, 102, 241, 0.3);
-    background: rgba(99, 102, 241, 0.08);
+    background: rgba(99, 102, 241, 0.06);
   }
 
   .user-btn--logged:hover {
     border-color: rgba(99, 102, 241, 0.5);
-    background: rgba(99, 102, 241, 0.12);
+    background: rgba(99, 102, 241, 0.1);
   }
 
   .user-avatar {
@@ -289,7 +291,7 @@
 
   .user-icon {
     font-size: 28px;
-    color: #64748b;
+    color: #9ca3af;
   }
 
   .user-name {
@@ -315,12 +317,12 @@
     top: calc(100% + 8px);
     right: 0;
     width: 220px;
-    background: rgba(30, 41, 59, 0.95);
+    background: #ffffff;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid #e5e7eb;
     border-radius: 14px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
     overflow: hidden;
     z-index: 10000;
   }
@@ -353,18 +355,18 @@
     margin: 0;
     font-size: 14px;
     font-weight: 600;
-    color: #f1f5f9;
+    color: #1f2937;
   }
 
   .dropdown-role {
     margin: 2px 0 0;
     font-size: 12px;
-    color: #64748b;
+    color: #6b7280;
   }
 
   .dropdown-divider {
     height: 1px;
-    background: rgba(255, 255, 255, 0.06);
+    background: #e5e7eb;
     margin: 0;
   }
 
@@ -376,7 +378,7 @@
     padding: 12px 20px;
     border: none;
     background: none;
-    color: #94a3b8;
+    color: #6b7280;
     font-size: 14px;
     cursor: pointer;
     text-align: left;
@@ -384,17 +386,17 @@
   }
 
   .dropdown-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: #e2e8f0;
+    background: #f3f4f6;
+    color: #374151;
   }
 
   .dropdown-item--danger {
-    color: #f87171;
+    color: #ef4444;
   }
 
   .dropdown-item--danger:hover {
-    background: rgba(248, 113, 113, 0.08);
-    color: #fca5a5;
+    background: #fef2f2;
+    color: #dc2626;
   }
 
   /* ========== 过渡动画 ========== */

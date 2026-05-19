@@ -1,7 +1,7 @@
 <template>
   <div
-    class="flex flex-col md:flex-row min-h-screen text-gray-200 font-sans overflow-x-hidden selection:bg-purple-500 selection:text-white"
-    style="background: linear-gradient(135deg, #1e1b4b, #312e81, #3730a3)"
+    class="flex flex-col md:flex-row min-h-screen text-gray-800 font-sans overflow-x-hidden selection:bg-purple-500 selection:text-white"
+    style="background: #f5f5f7"
   >
     <!-- 侧边栏 -->
     <MusicSidebar :activeTab="activeTab" :likedCount="likedSongs.length" @switchTab="switchTab" />
@@ -17,7 +17,7 @@
           v-for="tab in mobileTabs"
           :key="tab.id"
           @click="switchTab(tab.id)"
-          :class="activeTab === tab.id ? 'text-purple-300 bg-white/10 shadow-lg shadow-purple-500/10' : 'text-white/40 hover:text-white/70'"
+          :class="activeTab === tab.id ? 'text-purple-600 bg-purple-50 shadow-lg shadow-purple-500/10' : 'text-gray-500 hover:text-gray-700'"
           class="flex-1 flex flex-col items-center py-2.5 mx-1 rounded-xl text-xs font-medium transition-all duration-300"
         >
           <i :class="tab.icon" class="text-base mb-1"></i>
@@ -42,7 +42,7 @@
         ref="scrollContainer"
       >
         <!-- 加载状态 -->
-        <div v-if="loading" class="flex flex-col items-center justify-center h-64 text-white/50">
+        <div v-if="loading" class="flex flex-col items-center justify-center h-64 text-gray-400">
           <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-500 mb-4"></div>
           <p>正在加载音乐数据...</p>
         </div>
@@ -64,17 +64,17 @@
 
         <!-- 搜索结果视图 -->
         <div v-else-if="activeTab === 'search'" class="space-y-8 animate-fade-in">
-          <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-bold text-white">
-              搜索 "<span class="text-purple-400">{{ searchQuery }}</span
+          <div class="flex items-center justify-between mb-1">
+            <h2 class="text-2xl font-bold text-gray-800">
+              搜索 "<span class="text-purple-600">{{ searchQuery }}</span
               >" 的结果
             </h2>
-            <span class="text-sm text-white/50">共找到 {{ searchResults.length }} 首歌曲</span>
+            <span class="text-sm text-gray-400">共找到 {{ searchResults.length }} 首歌曲</span>
           </div>
 
           <div
             v-if="searchResults.length === 0"
-            class="text-center py-20 text-white/40 bg-white/5 rounded-xl border border-dashed border-white/10"
+            class="text-center py-20 text-gray-400 bg-gray-50 rounded-xl border border-dashed border-gray-300"
           >
             <i class="fas fa-search text-4xl mb-4 opacity-30"></i>
             <p>未找到相关歌曲，换个关键词试试？</p>
@@ -90,10 +90,10 @@
         </div>
 
         <!-- 1. 推荐歌单视图 -->
-        <div v-else-if="activeTab === 'recommend'" class="space-y-8 animate-fade-in">
-          <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-              推荐歌单 <i class="fas fa-chevron-right text-sm text-white/40 mt-1"></i>
+        <div v-else-if="activeTab === 'recommend'" class="animate-fade-in">
+          <div class="flex items-center justify-between mb-1">
+            <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+              推荐歌单
             </h2>
           </div>
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
@@ -108,13 +108,13 @@
 
         <!-- 2. 排行榜视图 -->
         <div v-else-if="activeTab === 'toplist'" class="space-y-8 animate-fade-in">
-          <h2 class="text-2xl font-bold text-white">官方排行榜</h2>
+          <h2 class="text-2xl font-bold text-gray-800">官方排行榜</h2>
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             <div
               v-for="list in toplistData"
               :key="list.id"
               @click="getPlaylistDetail(list.id)"
-              class="group cursor-pointer bg-white/5 backdrop-blur-sm rounded-xl p-3 shadow-sm hover:shadow-lg transition-all border border-white/10 flex flex-col"
+              class="group cursor-pointer bg-white rounded-xl p-3 shadow-sm hover:shadow-lg transition-all border border-gray-200 flex flex-col"
             >
               <div class="relative aspect-square rounded-lg overflow-hidden mb-3">
                 <img
@@ -128,8 +128,8 @@
                   <span class="text-white text-xs font-bold">点击播放</span>
                 </div>
               </div>
-              <h3 class="font-bold text-white/80 truncate">{{ list.name }}</h3>
-              <p class="text-xs text-white/50 mt-1 line-clamp-2">
+              <h3 class="font-bold text-gray-800 truncate">{{ list.name }}</h3>
+              <p class="text-xs text-gray-500 mt-1 line-clamp-2">
                 {{ list.updateFrequency || '每日更新' }}
               </p>
             </div>
@@ -156,7 +156,7 @@
             </div>
             <button
               @click="playAllLiked"
-              class="w-full md:w-auto px-4 md:px-6 py-2 md:py-3 bg-white text-purple-600 rounded-full font-bold hover:bg-gray-100 transition-colors shadow-lg flex items-center justify-center gap-2 text-sm md:text-base"
+              class="w-full md:w-auto px-4 md:px-6 py-2 md:py-3 bg-purple-600 text-white rounded-full font-bold hover:bg-purple-700 transition-colors shadow-lg flex items-center justify-center gap-2 text-sm md:text-base"
             >
               <i class="fas fa-play"></i> 播放全部
             </button>
@@ -164,17 +164,17 @@
 
           <!-- 我喜欢的搜索栏 -->
           <div class="relative">
-            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/40"></i>
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
             <input
               v-model="likedSearchQuery"
               type="text"
               placeholder="在喜欢的歌曲中搜索..."
-              class="w-full pl-12 pr-10 py-3 bg-white/5 border border-white/10 rounded-xl text-sm focus:bg-white/10 focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 outline-none transition-all duration-300 placeholder-white/30 text-white"
+              class="w-full pl-12 pr-10 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 outline-none transition-all duration-300 placeholder-gray-400 text-gray-800"
             />
             <button
               v-if="likedSearchQuery"
               @click="likedSearchQuery = ''"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
             >
               <i class="fas fa-times-circle"></i>
             </button>
@@ -182,7 +182,7 @@
 
           <div
             v-if="filteredLikedSongs.length === 0"
-            class="text-center py-20 text-white/40 bg-white/5 rounded-xl border border-dashed border-white/10"
+            class="text-center py-20 text-gray-400 bg-gray-50 rounded-xl border border-dashed border-gray-300"
           >
             <i v-if="likedSongs.length === 0" class="fas fa-music text-4xl mb-4 opacity-30"></i>
             <i v-else class="fas fa-search text-4xl mb-4 opacity-30"></i>
@@ -202,13 +202,13 @@
 
         <!-- 4. 最近播放视图 -->
         <div v-else-if="activeTab === 'history'" class="space-y-6 animate-fade-in">
-          <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-              <i class="fas fa-history text-white/40"></i> 最近播放
+          <div class="flex items-center justify-between mb-1">
+            <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+              <i class="fas fa-history text-gray-400"></i> 最近播放
             </h2>
             <button
               @click="clearHistory"
-              class="text-xs text-white/40 hover:text-purple-400 transition-colors px-3 py-1 border border-white/20 rounded-full hover:border-purple-500/50"
+              class="text-xs text-gray-500 hover:text-purple-600 transition-colors px-3 py-1 border border-gray-300 rounded-full hover:border-purple-500/50"
             >
               清空历史
             </button>
@@ -216,7 +216,7 @@
 
           <div
             v-if="historySongs.length === 0"
-            class="text-center py-20 text-white/40 bg-white/5 rounded-xl border border-dashed border-white/10"
+            class="text-center py-20 text-gray-400 bg-gray-50 rounded-xl border border-dashed border-gray-300"
           >
             <i class="fas fa-clock text-4xl mb-4 opacity-30"></i>
             <p>暂无播放记录</p>
@@ -224,13 +224,13 @@
 
           <div
             v-else
-            class="bg-white/5 backdrop-blur-sm rounded-xl shadow-sm border border-white/10 overflow-hidden"
+            class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
           >
             <div
               v-for="(song, index) in historySongs"
               :key="song.id + '-' + index"
               @click="playSong(song)"
-              class="flex items-center gap-4 p-4 hover:bg-white/5 cursor-pointer border-b border-white/5 last:border-0 transition-colors group"
+              class="flex items-center gap-4 p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 transition-colors group"
             >
               <div class="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
                 <img
@@ -246,19 +246,19 @@
               </div>
               <div class="flex-1 min-w-0">
                 <h4
-                  class="text-sm font-bold text-white/80 truncate group-hover:text-purple-400 transition-colors"
+                  class="text-sm font-bold text-gray-800 truncate group-hover:text-purple-600 transition-colors"
                 >
                   {{ song.name }}
                 </h4>
-                <p class="text-xs text-white/50 truncate">{{ song.ar?.[0]?.name || '未知歌手' }}</p>
+                <p class="text-xs text-gray-500 truncate">{{ song.ar?.[0]?.name || '未知歌手' }}</p>
               </div>
-              <div class="text-xs text-white/40 font-mono hidden sm:block">
+              <div class="text-xs text-gray-400 font-mono hidden sm:block">
                 {{ formatTime((song.dt || 0) / 1000) }}
               </div>
               <button
                 @click.stop="toggleLike(song)"
-                class="p-2 rounded-full hover:bg-white/10 transition-colors"
-                :class="isLiked(song.id) ? 'text-red-500' : 'text-white/30'"
+                class="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                :class="isLiked(song.id) ? 'text-red-400' : 'text-gray-400'"
               >
                 <i :class="isLiked(song.id) ? 'fas' : 'far'" class="fa-heart"></i>
               </button>
@@ -589,12 +589,12 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
+    background: #6b7280;
     border-radius: 3px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: #9ca3af;
   }
 
   .animate-fade-in {

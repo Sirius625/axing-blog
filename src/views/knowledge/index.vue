@@ -880,8 +880,8 @@
 <style scoped>
   .knowledge-app {
     min-height: 100%;
-    background: linear-gradient(135deg, #1e1b4b, #312e81, #3730a3);
-    color: #e0e0e0;
+    background: #f5f5f7;
+    color: #374151;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     padding-bottom: 2rem;
   }
@@ -896,7 +896,7 @@
   .empty-state {
     text-align: center;
     padding: 4rem 2rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: #9ca3af;
   }
 
   .empty-state i {
@@ -909,7 +909,7 @@
     font-size: 1.25rem;
     font-weight: 600;
     margin: 0 0 0.5rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: #9ca3af;
   }
 
   .empty-state p {

@@ -201,14 +201,14 @@
 <style scoped>
   /* ========== 基础变量 ========== */
   :root {
-    --player-bg: rgba(18, 18, 36, 0.95);
-    --player-border: rgba(255, 255, 255, 0.08);
-    --text-primary: rgba(255, 255, 255, 0.9);
-    --text-secondary: rgba(255, 255, 255, 0.5);
+    --player-bg: rgba(255, 255, 255, 0.98);
+    --player-border: rgba(0, 0, 0, 0.08);
+    --text-primary: rgba(0, 0, 0, 0.85);
+    --text-secondary: rgba(0, 0, 0, 0.45);
     --accent-start: #a855f7;
     --accent-end: #ec4899;
-    --control-color: rgba(255, 255, 255, 0.55);
-    --control-hover: rgba(255, 255, 255, 0.9);
+    --control-color: rgba(0, 0, 0, 0.45);
+    --control-hover: rgba(0, 0, 0, 0.75);
   }
 
   /* ========== 播放器容器 ========== */
@@ -218,13 +218,14 @@
     left: 0;
     right: 0;
     height: 5.5rem;
-    background: rgba(10, 8, 30, 0.98);
-    border-top: 1px solid var(--player-border);
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
     z-index: 50;
     padding: 0 1.5rem;
     touch-action: none;
     overflow: visible;
     transition: height 0.3s ease;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
   }
 
   /* ========== 迷你模式 ========== */
@@ -232,9 +233,9 @@
     height: 3.5rem;
     padding: 0 0.75rem;
     cursor: pointer;
-    background: rgba(10, 8, 30, 0.95);
-    border-top: 1px solid rgba(168, 85, 247, 0.15);
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
   }
 
   .player-mini .player-progress-bar {
@@ -294,13 +295,13 @@
   .mini-left .player-song-name {
     font-size: 0.8rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(0, 0, 0, 0.85);
     max-width: 100%;
   }
 
   .mini-left .player-song-artist {
     font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(0, 0, 0, 0.45);
     margin-top: 0.05rem;
     max-width: 100%;
   }
@@ -323,12 +324,12 @@
 
   .expand-btn {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.35);
+    color: rgba(0, 0, 0, 0.35);
     padding: 0.2rem;
   }
 
   .expand-btn:hover {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(0, 0, 0, 0.7);
   }
 
   /* ========== 展开模式 ========== */
@@ -347,9 +348,13 @@
     z-index: 2;
   }
 
+  .player-expanded .player-progress-bar {
+    display: none;
+  }
+
   .progress-track {
     height: 100%;
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.08);
     cursor: pointer;
     position: relative;
     transition: height 0.15s;
@@ -454,7 +459,7 @@
   .like-btn {
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.35);
+    color: rgba(0, 0, 0, 0.35);
     cursor: pointer;
     font-size: 1.1rem;
     transition: all 0.25s ease;
@@ -463,7 +468,7 @@
   }
 
   .like-btn:hover {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(0, 0, 0, 0.6);
     transform: scale(1.15);
   }
 
@@ -486,16 +491,16 @@
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 0.5rem;
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.05);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.2);
+    color: rgba(0, 0, 0, 0.2);
     font-size: 1.1rem;
   }
 
   .empty-text {
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(0, 0, 0, 0.3);
     font-size: 0.85rem;
   }
 
@@ -563,6 +568,32 @@
     align-items: center;
     gap: 0.6rem;
     width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0;
+  }
+
+  .player-progress .time {
+    display: none;
+  }
+
+  .player-progress .progress-bar {
+    border-radius: 0;
+    height: 3px;
+  }
+
+  .player-progress .progress-bar:hover {
+    height: 3px;
+  }
+
+  .player-progress .progress-fill {
+    border-radius: 0;
+  }
+
+  .player-progress .progress-thumb {
+    display: none;
   }
 
   .time {
@@ -577,7 +608,7 @@
   .progress-bar {
     flex: 1;
     height: 4px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.08);
     border-radius: 3px;
     cursor: pointer;
     position: relative;
@@ -631,11 +662,11 @@
 
   .collapse-btn {
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.35);
+    color: rgba(0, 0, 0, 0.35);
   }
 
   .collapse-btn:hover {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(0, 0, 0, 0.7);
   }
 
   .volume-control {
@@ -647,7 +678,7 @@
   .volume-bar {
     width: 80px;
     height: 4px;
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.08);
     border-radius: 3px;
     cursor: pointer;
     position: relative;
@@ -656,7 +687,7 @@
 
   .volume-bar:hover {
     height: 6px;
-    background: rgba(255, 255, 255, 0.18);
+    background: rgba(0, 0, 0, 0.12);
   }
 
   .volume-fill {
@@ -688,9 +719,9 @@
     .player-bar {
       height: 4.5rem;
       padding: 0 0.5rem;
-      background: rgba(10, 8, 30, 0.97);
-      border-top: 1px solid rgba(168, 85, 247, 0.15);
-      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4);
+      background: #ffffff;
+      border-top: 1px solid #e5e7eb;
+      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.08);
     }
 
     .player-mini {
@@ -708,9 +739,13 @@
       height: 2px;
     }
 
+    .player-expanded .player-progress-bar {
+      display: none;
+    }
+
     .progress-track {
       height: 2px;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(0, 0, 0, 0.08);
     }
 
     .player-bar:hover .progress-track {
@@ -762,7 +797,7 @@
       max-width: 100%;
       font-size: 0.7rem;
       font-weight: 500;
-      color: rgba(255, 255, 255, 0.85);
+      color: rgba(0, 0, 0, 0.85);
     }
 
     .player-song-artist {
@@ -771,7 +806,7 @@
 
     .like-btn {
       font-size: 0.85rem;
-      color: rgba(255, 255, 255, 0.3);
+      color: rgba(0, 0, 0, 0.35);
       flex-shrink: 0;
       padding: 0.2rem;
     }
@@ -795,16 +830,17 @@
       align-items: center;
       justify-content: center;
       gap: 0.7rem;
+      margin-top: 0.25rem;
     }
 
     .player-controls .control-btn {
       font-size: 0.85rem;
-      color: rgba(255, 255, 255, 0.45);
+      color: rgba(0, 0, 0, 0.45);
       padding: 0.2rem;
     }
 
     .player-controls .control-btn:active {
-      color: rgba(255, 255, 255, 0.85);
+      color: rgba(0, 0, 0, 0.75);
       transform: scale(0.9);
     }
 
@@ -827,12 +863,12 @@
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      gap: 0;
+      gap: 1;
     }
 
     .player-right .control-btn {
       font-size: 0.85rem;
-      color: rgba(255, 255, 255, 0.35);
+      color: rgba(0, 0, 0, 0.35);
       padding: 0.2rem;
     }
 
@@ -845,17 +881,17 @@
       align-items: center;
       gap: 0;
       width: 100%;
+      padding: 0;
       position: absolute;
-      bottom: 0;
+      top: 0;
       left: 0;
       right: 0;
-      padding: 0;
     }
 
     .player-progress .progress-bar {
       height: 3px;
       border-radius: 0;
-      background: rgba(255, 255, 255, 0.35);
+      background: rgba(0, 0, 0, 0.08);
     }
 
     .player-progress .progress-bar:hover {
@@ -868,6 +904,10 @@
     }
 
     .player-progress .progress-thumb {
+      display: none;
+    }
+
+    .player-progress .time {
       display: none;
     }
 

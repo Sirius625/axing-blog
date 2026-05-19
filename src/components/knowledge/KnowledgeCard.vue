@@ -37,8 +37,8 @@
 
 <style scoped>
   .knowledge-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
     border-radius: 1rem;
     overflow: hidden;
     cursor: pointer;
@@ -48,8 +48,8 @@
 
   .knowledge-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border-color: #d1d5db;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   }
 
   .card-header {
@@ -76,13 +76,13 @@
   .card-body h3 {
     font-size: 1.1rem;
     font-weight: 600;
-    color: white;
+    color: #1f2937;
     margin: 0 0 0.5rem;
   }
 
   .card-body p {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: #6b7280;
     line-height: 1.5;
     margin: 0;
     display: -webkit-box;
@@ -93,7 +93,7 @@
 
   .card-footer {
     padding: 0.75rem 1.25rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid #e5e7eb;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -108,18 +108,18 @@
   .tag {
     font-size: 0.7rem;
     padding: 0.2rem 0.5rem;
-    background: rgba(255, 255, 255, 0.08);
+    background: #f3f4f6;
     border-radius: 0.35rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: #6b7280;
   }
 
   .card-arrow {
-    color: rgba(255, 255, 255, 0.2);
+    color: #d1d5db;
     transition: all 0.3s;
   }
 
   .knowledge-card:hover .card-arrow {
-    color: rgba(255, 255, 255, 0.6);
+    color: #6b7280;
     transform: translateX(4px);
   }
 </style>
