@@ -141,7 +141,7 @@
 
   @media (max-width: 768px) {
     .filter-bar {
-      padding: 1rem;
+      padding: 0.75rem;
     }
   }
 </style>

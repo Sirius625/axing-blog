@@ -799,6 +799,16 @@
     min-height: calc(100vh - 4rem);
   }
 
+  @media (min-width: 769px) {
+    .app-main {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      margin: 1.5rem 0;
+      padding: 2rem;
+    }
+  }
+
   @media (max-width: 768px) {
     .app-main {
       padding: 0rem 0.75rem 5rem;

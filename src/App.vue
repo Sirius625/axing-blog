@@ -105,6 +105,14 @@
     box-sizing: border-box;
   }
 
+  /* 桌面端：页面内容居中，两边留空 */
+  @media (min-width: 769px) {
+    .workspace {
+      padding-left: max(calc((100vw - 1200px) / 2), 2rem);
+      padding-right: max(calc((100vw - 1200px) / 2), 2rem);
+    }
+  }
+
   @media (max-width: 768px) {
     .workspace {
       padding-top: 56px;

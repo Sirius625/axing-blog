@@ -893,6 +893,16 @@
     gap: 1.25rem;
   }
 
+  @media (min-width: 769px) {
+    .knowledge-grid {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      margin: 1.5rem 0;
+      padding: 2rem;
+    }
+  }
+
   .empty-state {
     text-align: center;
     padding: 4rem 2rem;

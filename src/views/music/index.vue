@@ -580,6 +580,15 @@
     }
   }
 
+  @media (min-width: 769px) {
+    .music-main {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      margin: 1.5rem 0;
+    }
+  }
+
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
   }
