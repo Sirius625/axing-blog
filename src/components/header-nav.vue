@@ -7,7 +7,7 @@
         <div class="logo-icon">
           <i class="fa-solid fa-crown"></i>
         </div>
-        <h1 class="logo-text">axing<span class="logo-accent">BLOG</span></h1>
+        <h1 class="logo-text"><span class="logo-accent">BLOG</span></h1>
       </div>
 
       <!-- 导航链接 -->

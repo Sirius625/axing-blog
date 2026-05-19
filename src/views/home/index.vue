@@ -4,9 +4,9 @@
     <header class="app-header">
       <div class="header-content">
         <div class="logo-area" @click="resetView">
-          <div class="logo-icon">
+          <!-- <div class="logo-icon">
             <i class="fas fa-images"></i>
-          </div>
+          </div> -->
           <h1>图片画廊</h1>
         </div>
         <div class="header-actions">
@@ -28,24 +28,6 @@
         </div>
       </div>
     </header>
-
-    <!-- Tab 切换栏 -->
-    <div class="tab-bar">
-      <button
-        :class="['tab-btn', { active: activeTab === 'images' }]"
-        @click="activeTab = 'images'"
-      >
-        <i class="fas fa-images"></i>
-        <span>图片</span>
-      </button>
-      <button
-        :class="['tab-btn', { active: activeTab === 'videos' }]"
-        @click="activeTab = 'videos'"
-      >
-        <i class="fas fa-video"></i>
-        <span>视频</span>
-      </button>
-    </div>
 
     <!-- 主内容区 -->
     <main class="app-main">
@@ -107,12 +89,17 @@
 
         <!-- 状态栏 -->
         <div class="status-bar">
-          <span class="count-text">
-            共 <strong>{{ filteredImages.length }}</strong> 张图片
-          </span>
-          <span v-if="loading" class="loading-indicator">
-            <i class="fas fa-spinner fa-spin"></i> 加载中...
-          </span>
+          <div class="status-left">
+            <span class="count-text">
+              共 <strong>{{ filteredImages.length }}</strong> 张图片
+            </span>
+            <span v-if="loading" class="loading-indicator">
+              <i class="fas fa-spinner fa-spin"></i> 加载中...
+            </span>
+          </div>
+          <div class="status-right">
+            <TabSwitch :active-tab="activeTab" @update:active-tab="activeTab = $event" />
+          </div>
         </div>
 
         <!-- 图片网格 -->
@@ -165,12 +152,17 @@
 
         <!-- 状态栏 -->
         <div class="status-bar">
-          <span class="count-text">
-            共 <strong>{{ filteredVideos.length }}</strong> 个视频
-          </span>
-          <span v-if="videoLoading" class="loading-indicator">
-            <i class="fas fa-spinner fa-spin"></i> 加载中...
-          </span>
+          <div class="status-left">
+            <span class="count-text">
+              共 <strong>{{ filteredVideos.length }}</strong> 个视频
+            </span>
+            <span v-if="videoLoading" class="loading-indicator">
+              <i class="fas fa-spinner fa-spin"></i> 加载中...
+            </span>
+          </div>
+          <div class="status-right">
+            <TabSwitch :active-tab="activeTab" @update:active-tab="activeTab = $event" />
+          </div>
         </div>
 
         <!-- 视频网格 -->
@@ -252,6 +244,7 @@
   // 图片服务器基础地址
   const IMAGE_BASE_URL = import.meta.env.VITE_MANAGE_API_BASE_URL || 'http://localhost:3030'
   import ImageCard from '@/components/home/ImageCard.vue'
+  import TabSwitch from '@/components/home/TabSwitch.vue'
   // 非首屏必需组件 - 动态导入（弹窗类组件）
   const ImageUploadModal = defineAsyncComponent(() => import('@/components/home/ImageUploadModal.vue'))
   const VideoUploadModal = defineAsyncComponent(() => import('@/components/home/VideoUploadModal.vue'))
@@ -552,10 +545,12 @@
         fetchImages()
       } else {
         showToast(result.message || '上传失败', 'error')
+        uploadModalRef.value?.reset()
       }
     } catch (e) {
       console.error('上传失败:', e)
       showToast('上传失败，请检查网络连接', 'error')
+      uploadModalRef.value?.reset()
     }
   }
 
@@ -587,10 +582,12 @@
         fetchVideos()
       } else {
         showToast(result.message || '上传失败', 'error')
+        videoUploadModalRef.value?.reset()
       }
     } catch (e) {
       console.error('视频上传失败:', e)
       showToast('视频上传失败，请检查网络连接', 'error')
+      videoUploadModalRef.value?.reset()
     }
   }
 
@@ -663,7 +660,7 @@
 
   .header-content {
     padding: 0 2rem;
-    height: 4rem;
+    height: 3rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -672,7 +669,7 @@
   @media (max-width: 768px) {
     .header-content {
       padding: 0 0.75rem;
-      height: 3.5rem;
+      height: 3rem;
     }
 
     .header-actions {
@@ -684,44 +681,44 @@
     }
 
     .primary-btn {
-      padding: 0.5rem;
-      font-size: 0.85rem;
+      padding: 0.4rem;
+      font-size: 0.8rem;
     }
 
     .logo-area h1 {
-      font-size: 1rem;
+      font-size: 0.85rem;
     }
 
     .logo-icon {
-      width: 2rem;
-      height: 2rem;
-      font-size: 1rem;
+      width: 1.6rem;
+      height: 1.6rem;
+      font-size: 0.8rem;
     }
   }
 
   .logo-area {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
     cursor: pointer;
   }
 
   .logo-icon {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 1.8rem;
+    height: 1.8rem;
     background-color: var(--primary-color);
-    border-radius: 0.5rem;
+    border-radius: 0.4rem;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 1.25rem;
-    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+    font-size: 0.9rem;
+    box-shadow: 0 2px 4px -1px rgba(79, 70, 229, 0.2);
   }
 
   .logo-area h1 {
-    font-size: 1.25rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 600;
     color: var(--text-color);
     letter-spacing: -0.025em;
   }
@@ -729,17 +726,18 @@
   .header-actions {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.6rem;
   }
 
   .icon-btn {
-    padding: 0.5rem;
+    padding: 0.35rem;
     border-radius: 9999px;
     color: #6b7280;
     background: transparent;
     border: none;
     cursor: pointer;
     transition: all 0.2s;
+    font-size: 0.85rem;
   }
 
   .icon-btn:hover {
@@ -754,79 +752,43 @@
   .primary-btn {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.35rem;
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
-    padding: 0.5rem 1.25rem;
-    border-radius: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 0.4rem;
     border: 1px solid rgba(255, 255, 255, 0.15);
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: 500;
+    font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.2s;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.35);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
   }
 
   .primary-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
   }
 
-  /* Tab 切换栏 */
-  .tab-bar {
+  /* 状态栏布局 */
+  .status-bar {
     display: flex;
-    justify-content: center;
-    gap: 0.25rem;
-    padding: 0.5rem 2rem 0;
-    background-color: transparent;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
   }
 
-  .tab-btn {
+  .status-left {
     display: flex;
     align-items: center;
-    gap: 0.35rem;
-    padding: 0.4rem 1.2rem;
-    border: 1px solid var(--border-color);
-    border-radius: 0.4rem 0.4rem 0 0;
-    background-color: rgba(255, 255, 255, 0.05);
-    color: #9ca3af;
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    backdrop-filter: blur(5px);
+    gap: 0.75rem;
   }
 
-  .tab-btn:hover {
-    color: var(--text-color);
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .tab-btn.active {
-    color: var(--primary-color);
-    background-color: var(--card-bg);
-    border-bottom-color: var(--card-bg);
-    box-shadow: 0 -2px 10px rgba(102, 126, 234, 0.15);
-  }
-
-  .tab-btn i {
-    font-size: 0.85rem;
-  }
-
-  @media (max-width: 768px) {
-    .tab-bar {
-      padding: 0.35rem 0.75rem 0;
-      gap: 0.2rem;
-    }
-
-    .tab-btn {
-      padding: 0.35rem 0.75rem;
-      font-size: 0.8rem;
-    }
-
-    .tab-btn span {
-      display: none;
-    }
+  .status-right {
+    display: flex;
+    align-items: center;
   }
 
   /* 主内容区 */
@@ -839,7 +801,7 @@
 
   @media (max-width: 768px) {
     .app-main {
-      padding: 1rem 0.75rem 5rem;
+      padding: 0rem 0.75rem 5rem;
     }
   }
 
@@ -984,16 +946,6 @@
   .dark-mode .toggle-btn.active {
     background-color: #4b5563;
     color: white;
-  }
-
-  /* 状态栏 */
-  .status-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    font-size: 0.875rem;
-    color: #6b7280;
   }
 
   .count-text strong {

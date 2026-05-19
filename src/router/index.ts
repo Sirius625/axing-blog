@@ -11,6 +11,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 /** 路由表定义 */
 const routes = [
   {
+    path: '/',
+    redirect: '/home'
+  },
+  {
     path: '/home',
     name: 'home',
     component: () => import('../views/home/index.vue')

@@ -106,11 +106,13 @@
 
   @media (max-width: 768px) {
     .knowledge-header {
-      padding: 1.5rem 1rem;
+      padding: 1rem 1rem;
       flex-direction: column;
       align-items: flex-start;
     }
-
+    .knowledge-header-inner{
+      padding: 0 0.5rem;
+    }
     .header-stats {
       width: 100%;
       justify-content: flex-start;

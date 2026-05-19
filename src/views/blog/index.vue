@@ -555,7 +555,7 @@
 <style scoped>
   /* ===== 全局 ===== */
   .blog-app {
-    min-height: 100%;
+    min-height: 100vh;
     background: linear-gradient(135deg, #1e1b4b, #312e81, #3730a3);
     color: #e0e0e0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -568,7 +568,7 @@
   .blog-header {
     background: rgba(255, 255, 255, 0.03);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    padding: 2rem 0;
+    padding: 1rem 0;
   }
 
   .header-content {
