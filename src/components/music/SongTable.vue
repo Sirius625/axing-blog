@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
-  >
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
     <table class="w-full text-left">
       <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
         <tr>

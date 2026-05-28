@@ -11,13 +11,17 @@
       <!-- 移动端顶部导航 Tab -->
       <div
         class="flex md:hidden sticky top-0 z-30 px-2 pt-1"
-        style="touch-action: none; background: transparent;"
+        style="touch-action: none; background: transparent"
       >
         <button
           v-for="tab in mobileTabs"
           :key="tab.id"
           @click="switchTab(tab.id)"
-          :class="activeTab === tab.id ? 'text-purple-600 bg-purple-50 shadow-lg shadow-purple-500/10' : 'text-gray-500 hover:text-gray-700'"
+          :class="
+            activeTab === tab.id
+              ? 'text-purple-600 bg-purple-50 shadow-lg shadow-purple-500/10'
+              : 'text-gray-500 hover:text-gray-700'
+          "
           class="flex-1 flex flex-col items-center py-2.5 mx-1 rounded-xl text-xs font-medium transition-all duration-300"
         >
           <i :class="tab.icon" class="text-base mb-1"></i>
@@ -92,9 +96,7 @@
         <!-- 1. 推荐歌单视图 -->
         <div v-else-if="activeTab === 'recommend'" class="animate-fade-in">
           <div class="flex items-center justify-between mb-1">
-            <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-              推荐歌单
-            </h2>
+            <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">推荐歌单</h2>
           </div>
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             <PlaylistCard
@@ -222,10 +224,7 @@
             <p>暂无播放记录</p>
           </div>
 
-          <div
-            v-else
-            class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
-          >
+          <div v-else class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div
               v-for="(song, index) in historySongs"
               :key="song.id + '-' + index"

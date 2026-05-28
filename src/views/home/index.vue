@@ -246,11 +246,19 @@
   import ImageCard from '@/components/home/ImageCard.vue'
   import TabSwitch from '@/components/home/TabSwitch.vue'
   // 非首屏必需组件 - 动态导入（弹窗类组件）
-  const ImageUploadModal = defineAsyncComponent(() => import('@/components/home/ImageUploadModal.vue'))
-  const VideoUploadModal = defineAsyncComponent(() => import('@/components/home/VideoUploadModal.vue'))
-  const ImagePreviewModal = defineAsyncComponent(() => import('@/components/home/ImagePreviewModal.vue'))
+  const ImageUploadModal = defineAsyncComponent(
+    () => import('@/components/home/ImageUploadModal.vue')
+  )
+  const VideoUploadModal = defineAsyncComponent(
+    () => import('@/components/home/VideoUploadModal.vue')
+  )
+  const ImagePreviewModal = defineAsyncComponent(
+    () => import('@/components/home/ImagePreviewModal.vue')
+  )
   const VideoCard = defineAsyncComponent(() => import('@/components/home/VideoCard.vue'))
-  const VideoPreviewModal = defineAsyncComponent(() => import('@/components/home/VideoPreviewModal.vue'))
+  const VideoPreviewModal = defineAsyncComponent(
+    () => import('@/components/home/VideoPreviewModal.vue')
+  )
 
   // 状态
   const images = ref<any[]>([])

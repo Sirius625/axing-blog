@@ -34,7 +34,11 @@
         </template>
       </div>
       <div class="mini-right" @click.stop>
-        <button class="control-btn play-btn" @click="$emit('togglePlay')" :title="isPlaying ? '暂停' : '播放'">
+        <button
+          class="control-btn play-btn"
+          @click="$emit('togglePlay')"
+          :title="isPlaying ? '暂停' : '播放'"
+        >
           <i :class="isPlaying ? 'fas fa-pause' : 'fas fa-play'"></i>
         </button>
         <button class="control-btn expand-btn" @click.stop="expanded = true">

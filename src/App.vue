@@ -6,7 +6,9 @@
       paddingBottom: playerStore.currentSong ? (isMusicPage ? '4rem' : '3rem') : '0'
     }"
   >
-    <router-view />
+    <KeepAlive>
+      <router-view />
+    </KeepAlive>
   </main>
   <loginModel
     :modelValue="showLoginModal"

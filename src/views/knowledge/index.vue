@@ -38,7 +38,9 @@
   import KnowledgeFilter from '@/components/knowledge/KnowledgeFilter.vue'
   import KnowledgeCard from '@/components/knowledge/KnowledgeCard.vue'
   // 弹窗组件 - 动态导入
-  const KnowledgeModal = defineAsyncComponent(() => import('@/components/knowledge/KnowledgeModal.vue'))
+  const KnowledgeModal = defineAsyncComponent(
+    () => import('@/components/knowledge/KnowledgeModal.vue')
+  )
 
   interface KnowledgeItem {
     id: number
